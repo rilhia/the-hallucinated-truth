@@ -1,43 +1,100 @@
 services:
-  bootstrap:
-    build: ./bootstrap
-    container_name: bootstrap_runner
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./temporal:/workspace/temporal
-      - ./game:/workspace/game
+  api:
+    build: ./game/api
+    container_name: hallucinated_api
+    ports:
+      - "3023:3023"
     environment:
-      - TEMPORAL_REPO=https://github.com/temporalio/docker-compose.git
-    command: /start.sh
-    restart: "no"
+      - TEMPORAL_ADDRESS=host.docker.internal:7233
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GOOGLE_CSE_ID=${GOOGLE_CSE_ID}
+      - PORT=3023
+    volumes:
+      - ./game/api/src:/app/src
+    command: sh -c "npm install && node src/server.js"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - webnet
+      - temporal-network
+    restart: unless-stopped
 
+  worker:
+    build: ./game/worker
+    container_name: hallucinated_worker
+    working_dir: /app
+    command: sh -c "npm install && node src/worker.js"
+    volumes:
+      - ./game/worker/src:/app/src
+    environment:
+      - TEMPORAL_ADDRESS=temporal:7233
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GOOGLE_CSE_ID=${GOOGLE_CSE_ID}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - webnet
+      - temporal-network
+    restart: unless-stopped
+
+  web:
+    build: ./game/web
+    container_name: hallucinated_web
+    ports:
+      - "8085:80"
+    volumes:
+      - ./game/web/public:/usr/share/nginx/html:ro
+    restart: unless-stopped
+    networks:
+      - webnet
+      
   ollama:
     image: ollama/ollama:latest
-    container_name: ollama
+    container_name: hallucinated_ollama
     ports:
       - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
+    restart: unless-stopped
     entrypoint: ["/bin/sh", "-c"]
     command: |
       "
+      # Start Ollama in background
       ollama serve &
+
+      # Wait for API to come up
       sleep 3
+
+      echo 'Pulling Llama 3 8B...'
       ollama pull llama3:latest
+
+      # Keep container alive
       wait
       "
-    restart: unless-stopped
+    networks:
+      - webnet
 
   webui:
     image: ghcr.io/open-webui/open-webui:latest
-    container_name: ollama_webui
+    container_name: hallucinated_ollama_webui
     depends_on:
       - ollama
     ports:
       - "3000:8080"
     environment:
       - OLLAMA_API_BASE_URL=http://ollama:11434
+    volumes:
+      - webui_data:/app/backend/data
     restart: unless-stopped
+    networks:
+      - webnet
 
 volumes:
   ollama_data:
+  webui_data:
+    
+networks:
+  webnet:
+    driver: bridge
+  temporal-network:
+    external: true

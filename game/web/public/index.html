@@ -48,7 +48,7 @@ a:active {
 
 <body>
 
-<h1>The Unbelievable Truth — Temporal Edition</h1>
+<h1>The Hallucinated Truth</h1>
 
 
 
@@ -122,6 +122,11 @@ let typingElement = null;
 
 const noiseChars = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()[]{}<>?+-=_";
 
+const apiHost = window.location.hostname;           // "192.168.0.42"
+const apiPort = "3023";                              // your API port
+
+
+
 
 // ------------------------------------------------------------
 //  GENERIC HELPERS
@@ -161,7 +166,7 @@ function log(msg) {
 // ------------------------------------------------------------
 //  TYPING EFFECT
 // ------------------------------------------------------------
-function logTypingStart() {
+/*function logTypingStart() {
   const box = $("log");
 
   typingElement = document.createElement("div");
@@ -181,7 +186,46 @@ function logTypingStart() {
 
     box.scrollTop = box.scrollHeight;
   }, 35);
+}*/
+
+
+const hiddenPhrase = "the hallucinated truth";
+let hiddenIndex = 0;
+
+function logTypingStart() {
+  const box = $("log");
+
+  typingElement = document.createElement("div");
+  typingElement.className = "messageBoxText";
+  typingElement.style.opacity = 0.6;
+
+  box.appendChild(typingElement);
+  box.scrollTop = box.scrollHeight;
+
+  typingInterval = setInterval(() => {
+    let c;
+
+    // Every 8 cycles, insert the next phrase character
+    if (Math.random() < 0.14) {  // ~every 7 characters
+      c = hiddenPhrase[hiddenIndex];
+      hiddenIndex = (hiddenIndex + 1) % hiddenPhrase.length;
+    } else {
+      c = noiseChars[Math.floor(Math.random() * noiseChars.length)];
+    }
+
+    typingElement.innerText += c;
+
+    if (typingElement.innerText.length > 60) {
+      typingElement.innerText = typingElement.innerText.slice(5);
+    }
+
+    box.scrollTop = box.scrollHeight;
+  }, 35);
 }
+
+
+
+
 
 function logTypingStop() {
   clearInterval(typingInterval);
@@ -246,7 +290,8 @@ function buildSummary(state) {
 //  GAME INTERACTIONS
 // ------------------------------------------------------------
 $("startBtn").onclick = async () => {
-  const data = await postJSON("http://localhost:3023/api/start", {});
+  const data = await postJSON(`http://${apiHost}:${apiPort}/api/start`, {});
+
   gameId = data.gameId;
 
   setDisplay("gameLoaderContainer", "none");
@@ -262,7 +307,9 @@ $("initBtn").onclick = async () => {
 
   const promptSubject = $("promptSubject").value.trim();
   $("gameSubject").textContent = promptSubject;
-  await postJSON("http://localhost:3023/api/init", { gameId, promptSubject });
+  await postJSON(`http://${apiHost}:${apiPort}/api/init`, { gameId, promptSubject });
+  
+  
 
   log("📘 Story generation requested… waiting for Ollama.");
   setDisplay("initSection", "none");
@@ -273,7 +320,7 @@ $("explainBtn").onclick = async () => {
   const text = $("truthExplain").value.trim();
   if (!text) return;
 
-  await postJSON("http://localhost:3023/api/explainTruth", {
+  await postJSON(`http://${apiHost}:${apiPort}/api/explainTruth`, {
     gameId,
     explanation: text
   });
@@ -283,7 +330,7 @@ $("explainBtn").onclick = async () => {
 };
 
 $("noMoreTruthsBtn").onclick = async () => {
-  await postJSON("http://localhost:3023/api/end", { gameId });
+  await postJSON(`http://${apiHost}:${apiPort}/api/end`, { gameId });
 };
 
 
@@ -347,7 +394,8 @@ $("loadGameBtn").onclick = async () => {
 };
 
 async function loadGame(id) {
-  const res = await fetch(`http://localhost:3023/api/state/${id}`);
+  const res = await fetch(`http://${apiHost}:${apiPort}/api/state/${id}`);
+  
   const state = await res.json();
 
   gameId = id;
@@ -363,7 +411,8 @@ async function loadGame(id) {
 //  POPULATE GAME LISTS
 // ------------------------------------------------------------
 async function refreshDropdowns() {
-  const res = await fetch("http://localhost:3023/api/games");
+  const res = await fetch(`http://${apiHost}:${apiPort}/api/games`);
+  
   const { active, completed } = await res.json();
 
   $("completedDropdown").innerHTML = `<option value="">-- none --</option>`;
@@ -382,7 +431,8 @@ async function pollState() {
   if (!gameId) return;
 
   try {
-    const res = await fetch(`http://localhost:3023/api/state/${gameId}`);
+    const res = await fetch(`http://${apiHost}:${apiPort}/api/state/${gameId}`);
+    
     const state = await res.json();
 
     if (state.lastReply && state.lastReplyTime !== lastReplyTime) {
