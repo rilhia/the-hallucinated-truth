@@ -1,6 +1,12 @@
 import express from "express";
 import { getTemporalClient } from "../temporalClient.js";
-
+/**
+ * POST /api/guessCount
+ *
+ * Signal the judge with how many guesses were used (or remaining).
+ *
+ * Body: { workflowId: string, guessCount: number }
+ */
 const router = express.Router();
 
 router.post("/", async (req, res) => {

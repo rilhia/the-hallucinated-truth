@@ -2,6 +2,15 @@
 import { ChatOllama } from "@langchain/ollama";
 import { safeParseJson } from "../helpers/safeParseJson.js";
 
+/**
+ * Parse search results with the LLM to extract verifiable facts.
+ *
+ * The activity expects the model to return JSON-only output describing
+ * facts extracted from the provided search results.
+ *
+ * @param {Array<Object>} results - Search result objects to inspect.
+ * @returns {Promise<Array<Object>>} Array of extracted fact objects.
+ */
 export async function extractFactsActivity(subject, results) {
   console.log("🤖 [Activity] Extracting facts for:", subject);
 
@@ -69,6 +78,18 @@ No other text is allowed.
   }));
 }
 
+/**
+ * Extracts the last JSON array-like substring from a block of text.
+ *
+ * This scans the input for any substring that starts with `[` and ends with `]`
+ * (including multiline content). All such matches are collected, and the final
+ * one is returned. This does *not* parse JSON — it simply returns the raw
+ * substring representing the last array found.
+ *
+ * @param {string} text - The text to search for JSON array substrings.
+ * @returns {string} The last matched JSON array-like substring.
+ * @throws {Error} If no JSON array-like content is found in the text.
+ */
 function extractLastJsonArray(text) {
   const regex = /\[[\s\S]*?\]/g;
   const matches = text.match(regex);
@@ -77,3 +98,4 @@ function extractLastJsonArray(text) {
   }
   return matches[matches.length - 1];
 }
+

@@ -1,81 +1,194 @@
 // helpers/promptBuilder.js
-
+/**
+ * Build the initial game prompt instructing the LLM how to generate facts and format.
+ *
+ * @returns {string} The prompt used to initialise game content.
+ */
 export function initialGamePrompt(promptSubject, knownFacts = []) {
   const subject = promptSubject || "something deeply ridiculous";
 
-  const factsList = knownFacts
-    .map((f, i) => `FACT ${i + 1}: "${f.fact}"`)
-    .join("\n");
+  const factsList = JSON.stringify(knownFacts, null, 2);
 
-  return `
-You are writing a comedic lecture inspired by The Unbelievable Truth.
+  return `///////////////////////////////////////////////////////////////
+ FACT-BOUND STORY ENGINE — SPEC v3.3 (TRADITIONAL PARAGRAPHS)
+///////////////////////////////////////////////////////////////
 
-You MUST output ONLY one JSON object, followed immediately by the marker <<<END>>>.
+SYSTEM ROLE
 
-The required final output format is:
+You are the FACT-BOUND STORY ENGINE.
 
+Your sole task is to generate a comedic, surreal, misleading lecture in STRICT JSON format, embedding every fact from the supplied FACTS array exactly once somewhere within the story.
+
+You must produce ONE valid JSON object preceeded immediately by <<<START>>> and followed immediately by <<<END>>>.
+
+You must not output:
+- explanations
+- commentary
+- markdown
+- system acknowledgements
+- anything except <<<START>>> + JSON object + <<<END>>>
+
+
+///////////////////////////////////////////////////////////////
+ INPUT FORMAT (MODEL MUST READ CAREFULLY)
+///////////////////////////////////////////////////////////////
+
+You will receive a JSON array named FACTS containing objects shaped like this:
+
+[
+  {
+    "fact": "string",
+    "url": "string",
+    "source": "string"
+  },
+  ...
+]
+
+Let N = FACTS.length.
+
+Each FACTS[i].fact must be included EXACTLY ONCE in the story.
+
+ABSOLUTE FORMAT RULES:
+- FIRST SECTION of ENTIRE output must be <<<START>>>
+- THE FIRST CHARACTER of JSON must be "{"
+- FINAL CHARACTER of JSON must be "}"
+- Characters IMMEDIATELY after "}" must be: <<<END>>>
+- NOTHING may appear after <<<END>>>
+- NOTHING may appear before "{"
+- No markdown, no code fences, no headings
+- No comments, notes, or apology-like phrasing
+- No trailing commas
+- All strings must use standard double quotes
+- JSON must be fully valid and parseable
+
+///////////////////////////////////////////////////////////////
+FACT PAYLOAD (YOU MUST EMBED ALL OF THESE)
+///////////////////////////////////////////////////////////////
+
+${factsList}
+
+
+///////////////////////////////////////////////////////////////
+ REQUIRED OUTPUT SHAPE (MANDATORY)
+///////////////////////////////////////////////////////////////
+
+You MUST output EXACTLY this structure:
+
+<<<START>>>
 {
   "STORY": [
-    { "paragraph": "text", "number": 1 }
+    { "paragraph": "text", "number": 1 },
+    { "paragraph": "text", "number": 2 },
+    ...
   ]
 }
 <<<END>>>
 
-IMPORTANT:
-- The JSON object MUST be valid.
-- The JSON object MUST end with "}".
-- After the final "}", you MUST output the marker <<<END>>>.
-- NOTHING may appear after <<<END>>>.
-- NOTHING may appear before the opening "{".
-- No markdown, no comments, no explanations.
-
-STORY RULES:
-- 4 to 8 paragraphs.
-- Tone: confident, surreal, satirical, funny, weird.
-- Must begin with this exact sentence:
-  "Today, I am here to talk about ${subject}."
-- You MUST include ALL supplied facts EXACTLY once.
-- A supplied fact must appear completely and totally inline with the fact provided.
-- Do NOT paraphrase, alter, shorten, or expand any fact.
-- No paragraph may start with a true sentence.
-- False statements must dominate the story.
-- All falsehoods must be plausible or surreal and funny.
-- All falsehoods must be completely false. There must NOT be any possibility that a falsehood could be true.
-- All facts must be hidden among falsehoods.
-- Do NOT reorder the facts.
-
-THE FACTS YOU MUST EMBED:
-
-${factsList}
-
-HARD REQUIREMENTS:
-- All facts MUST be included in the story
-- No disclaimers
-- No mention of AI or models
-- No meta commentary
-- No safety talk
+RULES:
+- FIRST SECTION of ENTIRE output must be <<<START>>>
+- FIRST character of the JSON must be "{"
+- Final character of the JSON must be "}"
+- The characters IMMEDIATELY after "}" must be <<<END>>>
+- NOTHING may appear before "{"
+- NOTHING may appear after <<<END>>>
 - No trailing commas
-- All strings must use standard double quotes
-- All braces and brackets must match
-- The JSON must be valid and parseable
+- JSON must fully parse
+- All keys and all string values must use double quotes
 
-FINAL VALIDATION (MANDATORY):
-Before finishing, you MUST verify:
-1. The first character of your ENTIRE output is "{"
-2. The JSON ends with "}"
-3. The next characters immediately after "}" are <<<END>>>
-4. NOTHING appears after <<<END>>>
-5. No missing quotes, commas, or brackets
 
-You MUST output ONLY:
-The valid and complete JSON object
-FOLLOWED IMMEDIATELY by:
-<<<END>>>
+///////////////////////////////////////////////////////////////
+ STRUCTURAL RULES (NON-NEGOTIABLE)
+///////////////////////////////////////////////////////////////
 
-NOTHING ELSE.
-  `;
+1. Number of paragraphs:
+   - The STORY must contain AT LEAST (N + 1) paragraphs.
+   - Additional paragraphs are allowed.
+
+2. Mandatory opening line:
+   Paragraph 1 MUST begin with this sentence phrased in a grammatically correct way.:
+   "Today, I am here to talk about ${promptSubject}."
+   After this sentence, it must continue with an absurd falsehood.
+
+3. Fact inclusion rules:
+   - EVERY fact from FACTS[i].fact MUST appear EXACTLY ONCE somewhere in the STORY.
+   - A fact may appear in ANY paragraph except at the start.
+   - Facts may appear in the same paragraph together.
+   - Facts MUST be surrounded naturally by falsehoods.
+   - You may rephrase facts, but their factual meaning MUST remain identical.
+   - You MUST NOT distort, merge, duplicate, or omit facts.
+
+4. Paragraph structure rules:
+   - EVERY paragraph must begin with an unambiguously false statement.
+   - NO fact may appear in the first sentence of a paragraph.
+   - Paragraphs MUST be traditional paragraphs:
+       • multiple sentences
+       • coherent narrative flow
+       • not “micro-paragraphs” consisting of one isolated sentence
+       • not SEO-style short form
+       • substantial enough to conceal facts naturally
+
+5. Density rules:
+   - A paragraph MAY contain multiple facts.
+   - A paragraph MAY contain zero facts (except paragraph 1).
+   - The story MUST be long enough for facts to hide comfortably.
+
+
+///////////////////////////////////////////////////////////////
+ STYLE & TONE REQUIREMENTS
+///////////////////////////////////////////////////////////////
+
+- Surreal
+- Dryly authoritative
+- Comedically overconfident
+- Weirdly academic
+- Highly imaginative
+- Falsehoods must dominate and feel confidently delivered
+- Facts must blend in as if they are absurd lies
+- NO hinting about truth, rules, constraints, or any game-like structure
+
+
+///////////////////////////////////////////////////////////////
+ FACT REPHRASING RULES (STRICT)
+///////////////////////////////////////////////////////////////
+
+You MAY:
+- change grammar or sentence structure
+- rearrange clauses
+- split a fact into 1–2 sentences (ONLY if meaning is unchanged)
+
+You MUST NOT:
+- alter meaning
+- remove factual components
+- introduce doubt or speculation
+- merge or duplicate facts
+- change names, places, dates, relationships, or quantities
+
+
+///////////////////////////////////////////////////////////////
+ FINAL EXECUTION COMMAND
+///////////////////////////////////////////////////////////////
+
+After reading all instructions and the FACTS array:
+
+Enter:
+
+[STATE: GENERATE_STORY_JSON]
+[MODE: MAXIMUM MISDIRECTION]
+[CREATIVITY: HIGH]
+
+Then output ONLY:
+1. The valid JSON object
+2. <<<END>>>
+
+NOTHING ELSE.`;
 }
 
+/**
+ * Build a judge prompt used to evaluate player explanations.
+ *
+ * @param {Object} opts - Options controlling judge behaviour.
+ * @returns {string} The judge prompt text.
+ */
 export function buildJudgePrompt(userExplanation, knownFacts = []) {
   const list = knownFacts
     .map((f, i) => `Fact ${i}: "${f.fact}"`)

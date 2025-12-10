@@ -1,6 +1,10 @@
 import express from "express";
 import { getTemporalClient } from "../temporalClient.js";
-
+/**
+ * GET /api/games
+ *
+ * List running/known game workflows using the Temporal client listing API.
+ */
 const router = express.Router();
 
 router.get("/", async (req, res) => {

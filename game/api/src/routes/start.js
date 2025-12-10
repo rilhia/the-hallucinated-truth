@@ -1,6 +1,12 @@
 import express from "express";
 import { getTemporalClient } from "../temporalClient.js";
 
+/**
+ * POST /api/start
+ *
+ * Start a new game workflow. Expects minimal creation payload and returns
+ * the workflowId / runId started.
+ */
 const router = express.Router();
 
 router.post("/", async (req, res) => {

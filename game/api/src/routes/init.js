@@ -1,6 +1,13 @@
 import express from "express";
 import { getTemporalClient } from "../temporalClient.js";
 
+/**
+ * POST /api/init
+ *
+ * Signal an existing workflow to begin searching and collecting facts.
+ *
+ * Body: { workflowId: string, query: string, ... }
+ */
 const router = express.Router();
 
 router.post("/", async (req, res) => {
@@ -10,7 +17,14 @@ router.post("/", async (req, res) => {
     const client = await getTemporalClient();
     const handle = client.workflow.getHandle(gameId);
 
-    await handle.signal("startGame", promptSubject);
+    await handle.signal("searchGoogle", promptSubject);
+    
+    await handle.signal("collectFacts");
+    
+    await handle.signal("filterFacts");
+    
+
+
 
     res.json({ ok: true });
   } catch (err) {

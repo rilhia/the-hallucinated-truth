@@ -1,6 +1,12 @@
 import express from "express";
 import { getTemporalClient } from "../temporalClient.js";
-
+/**
+ * POST /api/end
+ *
+ * Signal that there are no more truths for the workflow (end round).
+ *
+ * Body: { workflowId: string }
+ */
 const router = express.Router();
 
 router.post("/", async (req, res) => {

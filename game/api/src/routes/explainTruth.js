@@ -1,6 +1,12 @@
 import express from "express";
 import { getTemporalClient } from "../temporalClient.js";
-
+/**
+ * POST /api/explainTruth
+ *
+ * Relay a player's explanation choice into the workflow for judging.
+ *
+ * Body: { workflowId: string, explanation: object }
+ */
 const router = express.Router();
 
 router.post("/", async (req, res) => {

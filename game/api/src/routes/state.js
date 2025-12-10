@@ -1,6 +1,12 @@
 import express from "express";
 import { getTemporalClient } from "../temporalClient.js";
-
+/**
+ * GET /api/state
+ *
+ * Query a workflow's current state via Temporal `getState` query.
+ *
+ * Query params: workflowId
+ */
 const router = express.Router();
 
 router.get("/:gameId", async (req, res) => {

@@ -3,102 +3,50 @@
 <head>
   <meta charset="utf-8">
   <title>Unbelievable Truth Game</title>
-  <style>
-    body { 
-      font-family: sans-serif; 
-      background:#111; 
-      color:#eee; 
-      max-width:650px; 
-      margin:40px auto; 
-      line-height:1.4;
-    }
-    input, button, select { 
-      padding:10px; 
-      font-size:16px; 
-      margin:5px 0; 
-    }
-    .log { 
-      background:#222; 
-      padding:10px; 
-      height:300px; 
-      overflow-y:auto; 
-      margin-top:20px; 
-      border-radius:6px;
-    }
-    .section {
-      margin-top:20px;
-      padding:15px;
-      background:#1a1a1a;
-      border-radius:8px;
-    }
-    .messageBoxText{
-      white-space: normal;
-      overflow-wrap: break-word;
-      word-break: break-word;
-    }
-    
-    a,
-a:visited,
-a:hover,
-a:active {
-  color: white;
-}
-  </style>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <h1>The Hallucinated Truth</h1>
 
+<div id="gameLoaderContainer">
 
+  <button id="startBtn" class="btn-start">Start New Game</button>
 
+  <div class="loader-row">
 
-
-<div id="gameLoaderContainer" style="margin-top:20px;">
-
-  <!-- Start New Game -->
-  <button id="startBtn" style="margin-bottom:15px;">Start New Game</button>
-
-  <!-- Two dropdowns side by side -->
-  <div style="display:flex; gap:20px; margin-bottom:15px;">
-
-    <!-- Completed Games -->
-    <div style="flex:1;">
+    <div class="loader-column">
       <label><b>Load Completed Game:</b></label><br>
-      <select id="completedDropdown" style="width:100%; margin-top:5px;">
+      <select id="completedDropdown" class="dropdown">
         <option value="">-- none --</option>
       </select>
     </div>
 
-    <!-- In-Progress Games -->
-    <div style="flex:1;">
+    <div class="loader-column">
       <label><b>Load In-Progress Game:</b></label><br>
-      <select id="inProgressDropdown" style="width:100%; margin-top:5px;">
+      <select id="inProgressDropdown" class="dropdown">
         <option value="">-- none --</option>
       </select>
     </div>
 
   </div>
 
-  <!-- Load selected -->
-  <button id="loadGameBtn">Load Selected Game</button>
+  <button id="loadGameBtn" class="btn-load">Load Selected Game</button>
 
 </div>
 
-
-
-
-<div id="gameArea" style="display:none;">
+<div id="gameArea" class="hidden">
   <p><b>Game ID:</b> <span id="gameId"></span></p>
   <p><b>Game Subject:</b> <span id="gameSubject"></span></p>
 
-  <div class="section" id="initSection" style="display:none;">
+  <div class="section hidden" id="initSection">
     <h3>Step 1 — Generate Unbelievable Truth Story</h3>
     <input id="promptSubject" placeholder="Suggest a subject…">
     <button id="initBtn">Generate Story</button>
   </div>
 
-  <div class="section" id="explainSection" style="display:none;">
+  <div class="section hidden" id="explainSection">
     <h3>Explain each truth one by one</h3>
     <input id="truthExplain" placeholder="Explain a truth…">
     <button id="explainBtn">Submit Explanation</button>
@@ -108,369 +56,6 @@ a:active {
   <div class="log" id="log"></div>
 </div>
 
-
-
-<script>
-// ------------------------------------------------------------
-//  GLOBAL STATE
-// ------------------------------------------------------------
-let gameId = null;
-let gameSubject = null;
-let lastReplyTime = "";
-let typingInterval = null;
-let typingElement = null;
-
-const noiseChars = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()[]{}<>?+-=_";
-
-const apiHost = window.location.hostname;           // "192.168.0.42"
-const apiPort = "3023";                              // your API port
-
-
-
-
-// ------------------------------------------------------------
-//  GENERIC HELPERS
-// ------------------------------------------------------------
-function $(id) {
-  return document.getElementById(id);
-}
-
-function setDisplay(id, value) {
-  $(id).style.display = value;
-}
-
-async function postJSON(url, body) {
-  return fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  }).then(r => r.json().catch(() => ({})));
-}
-
-function safeHTMLText(text) {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/ /g, '&nbsp;')
-    .replace(/\r?\n/g, '<br>');
-}
-
-function log(msg) {
-  const box = $("log");
-  box.innerHTML += `<div class="messageBoxText">${msg}</div>`;
-  box.scrollTop = box.scrollHeight;
-}
-
-
-// ------------------------------------------------------------
-//  TYPING EFFECT
-// ------------------------------------------------------------
-/*function logTypingStart() {
-  const box = $("log");
-
-  typingElement = document.createElement("div");
-  typingElement.className = "messageBoxText";
-  typingElement.style.opacity = 0.6;
-
-  box.appendChild(typingElement);
-  box.scrollTop = box.scrollHeight;
-
-  typingInterval = setInterval(() => {
-    const c = noiseChars[Math.floor(Math.random() * noiseChars.length)];
-    typingElement.innerText += c;
-
-    if (typingElement.innerText.length > 60) {
-      typingElement.innerText = typingElement.innerText.slice(5);
-    }
-
-    box.scrollTop = box.scrollHeight;
-  }, 35);
-}*/
-
-
-const hiddenPhrase = "the hallucinated truth";
-let hiddenIndex = 0;
-
-function logTypingStart() {
-  const box = $("log");
-
-  typingElement = document.createElement("div");
-  typingElement.className = "messageBoxText";
-  typingElement.style.opacity = 0.6;
-
-  box.appendChild(typingElement);
-  box.scrollTop = box.scrollHeight;
-
-  typingInterval = setInterval(() => {
-    let c;
-
-    // Every 8 cycles, insert the next phrase character
-    if (Math.random() < 0.14) {  // ~every 7 characters
-      c = hiddenPhrase[hiddenIndex];
-      hiddenIndex = (hiddenIndex + 1) % hiddenPhrase.length;
-    } else {
-      c = noiseChars[Math.floor(Math.random() * noiseChars.length)];
-    }
-
-    typingElement.innerText += c;
-
-    if (typingElement.innerText.length > 60) {
-      typingElement.innerText = typingElement.innerText.slice(5);
-    }
-
-    box.scrollTop = box.scrollHeight;
-  }, 35);
-}
-
-
-
-
-
-function logTypingStop() {
-  clearInterval(typingInterval);
-  typingInterval = null;
-  if (typingElement) typingElement.innerHTML = "";
-}
-
-function logTypingRealMessage(text) {
-  if (!typingElement) return;
-
-  const safe = safeHTMLText(text);
-  let i = 0;
-  (function typeTick() {
-    if (i <= safe.length) {
-      typingElement.innerHTML = safe.slice(0, i++);
-      requestAnimationFrame(typeTick);
-    }
-  })();
-}
-
-
-// ------------------------------------------------------------
-//  GAME SUMMARY BUILDER (Shared by replay + poll)
-// ------------------------------------------------------------
-function buildSummary(state) {
-  let html = "<br><b>Your Attempts</b><br><br>";
-
-  state.userExplanations.forEach((u, idx) => {
-    html += `<b>Guess ${idx + 1}:</b> ${u.userText}<br>`;
-    if (u.correct) {
-      const fact = state.knownFacts[u.matchedTruthIndex];
-      html += `✔ Correct — ${fact.fact}<br>`;
-      html += `<i>Source:</i> ${fact.source} — <a href="${fact.url}" target="_blank">${fact.url}</a><br><br>`;
-    } else {
-      html += `❌ Incorrect<br><br>`;
-    }
-  });
-
-  const guessed = state.userExplanations
-    .filter(u => u.correct)
-    .map(u => u.matchedTruthIndex);
-
-  const missed = state.knownFacts
-    .map((f, index) => ({ index, ...f }))
-    .filter(f => !guessed.includes(f.index));
-
-  if (missed.length > 0) {
-    html += "<br><b>Missed Truths</b><br><br>";
-    missed.forEach((f) => {
-      html += `• ${f.fact}<br>`;
-      html += `<i>Source:</i> ${f.source} — <a href="${f.url}" target="_blank">${f.url}</a><br><br>`;
-    });
-  } else {
-    html += "<br><b>You found every truth!</b><br><br>";
-  }
-
-  return html;
-}
-
-
-// ------------------------------------------------------------
-//  GAME INTERACTIONS
-// ------------------------------------------------------------
-$("startBtn").onclick = async () => {
-  const data = await postJSON(`http://${apiHost}:${apiPort}/api/start`, {});
-
-  gameId = data.gameId;
-
-  setDisplay("gameLoaderContainer", "none");
-  $("gameId").textContent = gameId;
-  setDisplay("gameArea", "block");
-  setDisplay("initSection", "block");
-
-  log("🟢 Game created. Click 'Generate Story' to begin.");
-};
-
-$("initBtn").onclick = async () => {
-  if (!gameId) return;
-
-  const promptSubject = $("promptSubject").value.trim();
-  $("gameSubject").textContent = promptSubject;
-  await postJSON(`http://${apiHost}:${apiPort}/api/init`, { gameId, promptSubject });
-  
-  
-
-  log("📘 Story generation requested… waiting for Ollama.");
-  setDisplay("initSection", "none");
-  logTypingStart();
-};
-
-$("explainBtn").onclick = async () => {
-  const text = $("truthExplain").value.trim();
-  if (!text) return;
-
-  await postJSON(`http://${apiHost}:${apiPort}/api/explainTruth`, {
-    gameId,
-    explanation: text
-  });
-
-  log(`📝 You: ${text}`);
-  $("truthExplain").value = "";
-};
-
-$("noMoreTruthsBtn").onclick = async () => {
-  await postJSON(`http://${apiHost}:${apiPort}/api/end`, { gameId });
-};
-
-
-// ------------------------------------------------------------
-//  REPLAY A GAME (Centralised)
-// ------------------------------------------------------------
-function replayGameFromState(state) {
-  logTypingStop();
-  $("log").innerHTML = "";
-  setDisplay("initSection", "none");
-
-  log("📂 --- Loaded Saved Game ---");
-  log("🟢 Game created. Click 'Generate Story' to begin.");
-  log("📘 Story generation requested… waiting for Ollama.");
-
-  if (state.story) {
-    typingElement = document.createElement("div");
-    typingElement.className = "messageBoxText";
-    typingElement.style.opacity = 0.6;
-
-    typingElement.innerHTML = safeHTMLText(
-      state.story.map(p => p.paragraph).join("\n\n") + "\n\n"
-    );
-
-    $("log").appendChild(typingElement);
-    setDisplay("explainSection", "block");
-  }
-
-  if (state.userExplanations) {
-    state.userExplanations.forEach(ex => {
-      log("📝 You: " + ex.userText);
-      log(
-        ex.correct
-          ? `✔ You were correct: ${state.knownFacts[ex.matchedTruthIndex].fact}<br><a href="${state.knownFacts[ex.matchedTruthIndex].url}"target="_blank">${state.knownFacts[ex.matchedTruthIndex].url}</a><br><br>`
-          : `❌ You were incorrect<br><br>`
-      );
-    });
-  }
-
-  if (state.stage===3) {
-    log(buildSummary(state));
-    log(`🎉 Game over — Score: ${state.score}`);
-
-    setDisplay("explainSection", "none");
-    setDisplay("gameLoaderContainer", "block");
-    gameId = null;
-  } else {
-    log("⏳ Game still active — continue guessing.");
-    setDisplay("explainSection", "block");
-  }
-}
-
-
-// ------------------------------------------------------------
-//  LOAD GAME
-// ------------------------------------------------------------
-$("loadGameBtn").onclick = async () => {
-  const id = $("completedDropdown").value || $("inProgressDropdown").value;
-  if (!id) return log("No game selected.");
-  loadGame(id);
-};
-
-async function loadGame(id) {
-  const res = await fetch(`http://${apiHost}:${apiPort}/api/state/${id}`);
-  
-  const state = await res.json();
-
-  gameId = id;
-  $("gameId").textContent = id;
-  $("gameSubject").textContent = state.subject;
-  setDisplay("gameArea", "block");
-
-  replayGameFromState(state);
-}
-
-
-// ------------------------------------------------------------
-//  POPULATE GAME LISTS
-// ------------------------------------------------------------
-async function refreshDropdowns() {
-  const res = await fetch(`http://${apiHost}:${apiPort}/api/games`);
-  
-  const { active, completed } = await res.json();
-
-  $("completedDropdown").innerHTML = `<option value="">-- none --</option>`;
-  $("inProgressDropdown").innerHTML = `<option value="">-- none --</option>`;
-
-  completed.forEach(id => $("completedDropdown").innerHTML += `<option value="${id}">${id}</option>`);
-  active.forEach(id => $("inProgressDropdown").innerHTML += `<option value="${id}">${id}</option>`);
-}
-refreshDropdowns();
-
-
-// ------------------------------------------------------------
-//  POLLING (uses shared summary + helpers)
-// ------------------------------------------------------------
-async function pollState() {
-  if (!gameId) return;
-
-  try {
-    const res = await fetch(`http://${apiHost}:${apiPort}/api/state/${gameId}`);
-    
-    const state = await res.json();
-
-    if (state.lastReply && state.lastReplyTime !== lastReplyTime) {
-      lastReplyTime = state.lastReplyTime;
-      logTypingStop();
-
-      if (state.stage === 1) {
-        const text = state.story.map(p => p.paragraph).join("\n\n") + "\n\n";
-        logTypingRealMessage(text);
-        setDisplay("explainSection", "block");
-      }
-
-      if (state.stage === 2) {
-        const last = state.userExplanations.at(-1);
-        log(
-          last.correct
-            ? `✔ You were correct: ${state.knownFacts[last.matchedTruthIndex].fact}<br><a href="${state.knownFacts[last.matchedTruthIndex].url}"target="_blank">${state.knownFacts[last.matchedTruthIndex].url}</a><br><br>`
-            : `❌ You were incorrect<br><br>`
-        );
-      }
-
-      if (state.stage === 3) {
-        log(buildSummary(state));
-
-      
-        log(`🎉 Game over — Score: ${state.score}`);
-        setDisplay("gameLoaderContainer", "block");
-        setDisplay("explainSection", "none");
-      }
-    }
-
-  } catch (err) {
-    console.error("Polling error:", err);
-  }
-}
-
-setInterval(pollState, 500);
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
