@@ -315,6 +315,21 @@ Remove or comment out the `ollama:` service:
       networks:
         - webnet
 
+### Step 3 — Restart Everything
+
+    docker compose down
+    docker compose up -d
+
+Ensure native Ollama is running:
+    
+    ollama serve
+
+### Summary
+
+| Mode | Speed | GPU | Notes |
+|------|-------|-----|-------|
+| Dockerised Ollama | Slowest | No GPU | Easiest setup |
+| Native Ollama | Fastest | Uses GPU  | Recommended for all M-series Mac users |
 
 ---
 
