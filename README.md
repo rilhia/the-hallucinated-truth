@@ -1,8 +1,21 @@
 # The Hallucinated Truth
 
-A LangChain + Temporal + Ollama game that challenges an LLM to justify its own hallucinations by grounding them in real facts.
+A game that evolved from looking into learning [Temporal](https://temporal.io/) for a job application.
 
 This README explains how to install, configure, and run the entire stack locally using Docker.
+
+## 💡 About the Game — Where “The Hallucinated Truth” Came From
+
+The Hallucinated Truth is inspired by the BBC radio comedy panel show [“The Unbelievable Truth”](https://en.wikipedia.org/wiki/The_Unbelievable_Truth_(radio_show)).
+In that show, a contestant delivers a story on a given topic where nearly everything is nonsense...apart from a few true statements which are hidden inside.
+The other players must spot and call out the truths buried within the lies.
+
+I thought it would be fun to recreate this format using an LLM.
+
+Large Language Models hallucinate all the time, so instead of avoiding that behaviour, this game leans into it.
+The agent generates a story filled with believable and unbelievable nonsense, hides real facts inside it, and your task is to uncover the truths.
+
+This project is a blend of [Temporal](https://temporal.io/), [LangChain](https://www.langchain.com/), [Ollama](https://ollama.com/), [Custom Google Search API](https://developers.google.com/custom-search/v1/introduction), some Javascript and a handful of overly verbose prompts to let an LLM play a variant of “The Unbelievable Truth” against you.
 
 ---
 
