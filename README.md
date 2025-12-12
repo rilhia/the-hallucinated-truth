@@ -22,20 +22,32 @@ This project is a blend of [Temporal](https://temporal.io/), [LangChain](https:/
 
 ## Table of Contents
 
-1. [Overview](#overview)
-2. [Prerequisites](#prerequisites)
-3. [Create Google Custom Search Credentials](#1-create-google-custom-search-credentials)
-   - [Log-in to Google Developer Console](#11-log-in-to-google-developer-console)
-   - [Create a New Project](#12-create-a-new-project)
-   - [Enable the Custom Search API](#13-enable-the-custom-search-api)
-   - [Create an API Key](#14-create-an-api-key-google_api_key)
-   - [Create a Programmable Search Engine](#15-create-a-programmable-search-engine-google_cse_id)
-4. [Install and Run Temporal](#2-install-and-run-temporal)
-5. [Clone This Repository and Configure Environment Variables](#3-clone-this-repository-and-configure-environment-variables)
-6. [Start the Application](#4-start-the-application)
-7. [Run Ollama Natively (Optional)](#5-optional-running-ollama-natively-for-better-performance-highly-recommended)
-8. [Using the App](#6-using-the-app-high-level)
-9. [Troubleshooting](#troubleshooting)
+- [The Hallucinated Truth](#the-hallucinated-truth)
+- [About the Game — Where “The Hallucinated Truth” Came From](#-about-the-game--where-the-hallucinated-truth-came-from)
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Create Google Custom Search Credentials](#create-google-custom-search-credentials)
+  - [Log-in to Google Developer Console](#log-in-to-google-developer-console)
+  - [Create a New Project](#create-a-new-project)
+  - [Enable the Custom Search API](#enable-the-custom-search-api)
+  - [Create an API Key (GOOGLE_API_KEY)](#create-an-api-key-google_api_key)
+  - [Create a Programmable Search Engine (GOOGLE_CSE_ID)](#create-a-programmable-search-engine-google_cse_id)
+- [Install and Run Temporal](#install-and-run-temporal)
+- [Clone This Repository and Configure Environment Variables](#clone-this-repository-and-configure-environment-variables)
+- [Start the Application](#start-the-application)
+- [Optional: Running Ollama Natively for Better Performance (Highly Recommended)](#optional-running-ollama-natively-for-better-performance-highly-recommended)
+  - [Why Native Ollama Is Faster](#why-native-ollama-is-faster)
+  - [Install Ollama Natively](#install-ollama-natively)
+  - [Remove Ollama Container From Docker Compose](#remove-ollama-container-from-docker-compose)
+  - [Restart Everything](#restart-everything)
+  - [Summary](#summary)
+- [Using the App (High-Level)](#using-the-app-high-level)
+- [Troubleshooting](#troubleshooting)
+  - [Temporal UI doesn’t load](#temporal-ui-doesnt-load)
+  - [llama3:latest model not available](#llama3latest-model-not-available)
+  - [.env not being picked up](#env-not-being-picked-up)
+  - [Ports already in use](#ports-already-in-use)
+- [You’re Ready to Play](#youre-ready-to-play)
 
 ---
 
@@ -81,7 +93,7 @@ If you want far better performance, you should run **Ollama natively**, not insi
 A full section below explains how to do this.
 ---
 
-## 1. Create Google Custom Search Credentials
+## Create Google Custom Search Credentials
 
 This app uses Google’s **Custom Search API**. Google provides **100 free searches per day**, so you can test without enabling billing.
 
@@ -94,7 +106,7 @@ These will be added to a `.env` file later.
 
 ---
 
-### 1.1 Log-in to Google Developer Console
+### Log-in to Google Developer Console
 
 Go to:
 
@@ -105,7 +117,7 @@ You do **not** need to add billing details just to test this project.
 
 ---
 
-### 1.2 Create a New Project
+### Create a New Project
 
 If you already have several projects, it’s cleaner to make a new one:
 
@@ -118,7 +130,7 @@ If this is your first time in Google Developer Console, Google will automaticall
 
 ---
 
-### 1.3 Enable the Custom Search API
+### Enable the Custom Search API
 
 1. In the top search bar, type:
 
@@ -136,7 +148,7 @@ If this is your first time using Google Developer Console, enabling the API will
 
 ---
 
-### 1.4 Create an API Key (GOOGLE_API_KEY)
+### Create an API Key (GOOGLE_API_KEY)
 
 
 1. In the left sidebar, click **Credentials**.
@@ -170,7 +182,7 @@ Keep it somewhere safe.
 
 ---
 
-### 1.5 Create a Programmable Search Engine (GOOGLE_CSE_ID)
+### Create a Programmable Search Engine (GOOGLE_CSE_ID)
 
 Now we need to create the Programmable Search Engine that will back the Custom Search API:
 
@@ -202,7 +214,7 @@ You now have both values required for the `.env` file.
 
 ---
 
-## 2. Install and Run Temporal
+## Install and Run Temporal
 
 Temporal orchestrates the long-running game workflows. The easiest way to run it locally is by using the official Temporal Docker Compose setup.
 
@@ -230,7 +242,7 @@ If you see the Temporal Web UI, your Temporal backend is up and ready.
 
 ---
 
-## 3. Clone This Repository and Configure Environment Variables
+## Clone This Repository and Configure Environment Variables
 
 Next, clone the game and agent code itself. 
 
@@ -265,7 +277,7 @@ At this point, the project is configured with the Google credentials it needs.
 
 ---
 
-## 4. Start the Application
+## Start the Application
 
 Make sure Temporal is still running (it will be unless you stopped the containers manually).
 
@@ -289,11 +301,11 @@ Open that URL in your browser to access **The Hallucinated Truth**.
 
 ---
 
-## 5. Optional: Running Ollama Natively for Better Performance (Highly Recommended)
+## Optional: Running Ollama Natively for Better Performance (Highly Recommended)
 
 ### Why Native Ollama Is Faster
 
-Ollama inside Docker runs under Linux virtualization and **cannot access Apple Metal acceleration**.  
+Ollama inside Docker runs under Linux virtualisation and **cannot access Apple Metal acceleration**.  
 Native Ollama uses:
 
 - Direct CPU/GPU access  
@@ -302,7 +314,7 @@ Native Ollama uses:
 
 This produces **2–6× faster inference** on M-series Macs.
 
-### Step 1 — Install Ollama Natively
+### Install Ollama Natively
 
 Download for macOS:
 
@@ -324,7 +336,7 @@ Native Ollama listens on:
 
     http://localhost:11434
 
-### Step 2 — Remove Ollama Container From Docker Compose
+### Remove Ollama Container From Docker Compose
 
 Remove or comment out the `ollama:` service:
 
@@ -354,7 +366,7 @@ Remove or comment out the `ollama:` service:
       networks:
         - webnet
 
-### Step 3 — Restart Everything
+### Restart Everything
 
     docker compose down
     docker compose up -d
@@ -372,7 +384,7 @@ Ensure native Ollama is running:
 
 ---
 
-## 6. Using the App (High-Level)
+## Using the App (High-Level)
 
 Once the app is running:
 
