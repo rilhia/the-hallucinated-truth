@@ -136,7 +136,10 @@ If this is your first time, enabling the API may also create your first project 
 ### 1.4 Create an API Key (GOOGLE_API_KEY)
 
 
-1. In the left sidebar, click **Credentials**.  
+1. In the left sidebar, click **Credentials**.
+
+<img src="images/GoogleSearchAPICredentials.png" alt="Custom Search Credentials" width="100%"> 
+
 2. At the top, click **+ Create Credentials**.  
 3. Select **API key**.  
 4. A sidebar appears showing your new key.
