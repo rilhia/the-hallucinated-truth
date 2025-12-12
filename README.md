@@ -1,4 +1,4 @@
-![The Hallucinated Truth](images/TitleImage.png)
+<kbd>![The Hallucinated Truth](images/TitleImage.png)</kbd>
 # The Hallucinated Truth
 
 A game that evolved from looking into learning [Temporal](https://temporal.io/) for a job application.
@@ -121,11 +121,11 @@ If this is your first time in Google Developer Console, Google will automaticall
 
        Custom Search API
 
-<img src="images/CustomSearchDropdown.png" alt="Custom Search" width="50%"> 
+<kbd><img src="images/CustomSearchDropdown.png" alt="Custom Search"></kbd>
 
 2. Click the result named **Custom Search API**.
 
-<img src="images/Google Custom Serach API.png" alt="Custom Search API Page" width="100%">
+<kbd><img src="images/Google Custom Serach API.png" alt="Custom Search API Page"></kbd>
 
 3. Click the **Enable** button.
 
@@ -138,17 +138,17 @@ If this is your first time using Google Developer Console, enabling the API will
 
 1. In the left sidebar, click **Credentials**.
 
-<img src="images/GoogleSearchAPICredentials.png" alt="Custom Search Credentials" width="100%"> 
+<kbd><img src="images/GoogleSearchAPICredentials.png" alt="Custom Search Credentials"></kbd> 
 
 2. At the top, click **+ Create Credentials**.
 
-<img src="images/SelectAPIKey.png" alt="Create Credentials Options" width="100%">    
+<kbd><img src="images/SelectAPIKey.png" alt="Create Credentials Options"></kbd>    
 
 3. Select **API key**.  
 
 4. A sidebar appears for you to configure your new key.
 
-<img src="images/CreateAPIKey.png" alt="Create API Sidebar" width="100%">
+<kbd><img src="images/CreateAPIKey.png" alt="Create API Sidebar"></kbd>
 
 Now restrict it:
 
@@ -157,7 +157,7 @@ Now restrict it:
 3. Choose **Custom Search API** from the dropdown.  
 4. Save your changes.
 
-<img src="images/APIKey.png" alt="API Key" width="100%">
+<kbd><img src="images/APIKey.png" alt="API Key"></kbd>
 
 Copy the generated key – this is your:
 
@@ -175,12 +175,12 @@ Now we need to create the Programmable Search Engine that will back the Custom S
 
        https://programmablesearchengine.google.com/
 
-<img src="images/ProgrammableSearchEngine.png" alt="Programmable Search Engine" width="100%">
+<kbd><img src="images/ProgrammableSearchEngine.png" alt="Programmable Search Engine"></kbd>
 
 3. Click **Add**.  
 4. Give your search engine a name.
 
-<img src="images/CreateSearchEngine.png" alt="Create Search Engine" width="100%">
+<kbd><img src="images/CreateSearchEngine.png" alt="Create Search Engine"></kbd>
 
 5. Configure it so it can search the **entire web**.  
 6. Click **Create**.
@@ -193,6 +193,8 @@ Copy only the value after `cx=`. That is your:
 
     GOOGLE_CSE_ID
 
+<kbd><img src="images/SearchEngineCode.png" alt="Search Engine Code"></kbd>
+
 You now have both values required for the `.env` file.
 
 ---
@@ -201,23 +203,25 @@ You now have both values required for the `.env` file.
 
 Temporal orchestrates the long-running game workflows. The easiest way to run it locally is by using the official Temporal Docker Compose setup.
 
-Clone the Temporal Docker Compose repository into a suitable folder (for example, wherever you keep your Docker-related projects):
+You can follow the Temporal instructions [here](https://github.com/temporalio/docker-compose) in more detail or just follow these instructions.
 
-    git clone https://github.com/temporalio/docker-compose.git ./temporal
+1. Clone the Temporal Docker Compose repository into a suitable folder (for example, wherever you keep your Docker-related projects):
 
-Move into the new directory:
+        git clone https://github.com/temporalio/docker-compose.git ./temporal
 
-    cd temporal
+2. Move into the new directory:
 
-Start Temporal with Docker Compose:
+        cd temporal
 
-    docker compose up -d
+3. Start Temporal with Docker Compose:
 
-Docker will pull all required Temporal images and start them in the background.
+        docker compose up -d
 
-To confirm it’s running, open a browser and go to:
+    Docker will pull all required Temporal images and start them in the background.
 
-    http://localhost:8080/
+4. To confirm it’s running, open a browser and go to:
+
+        http://localhost:8080/
 
 If you see the Temporal Web UI, your Temporal backend is up and ready.
 
@@ -225,37 +229,34 @@ If you see the Temporal Web UI, your Temporal backend is up and ready.
 
 ## 3. Clone This Repository and Configure Environment Variables
 
-Next, clone the game and agent code itself. From the root of your Docker projects folder (or wherever you prefer to keep this project), run:
+Next, clone the game and agent code itself. 
 
-    git clone https://github.com/rilhia/the-hallucinated-truth.git ./the-hallucinated-truth
+1. From the root of your Docker projects folder (or wherever you prefer to keep this project), run:
 
-This will create a folder named:
+        git clone https://github.com/rilhia/the-hallucinated-truth.git ./the-hallucinated-truth
 
-    the-hallucinated-truth
+    This will create a folder named:
 
-and clone everything needed to run the game, **except** the `.env` file.
+        the-hallucinated-truth
 
-Move into the project directory:
+    and clone everything needed to run the game, **except** the `.env` file.
 
-    cd the-hallucinated-truth
+2. Move into the project directory:
 
-You can verify with:
+        cd the-hallucinated-truth
 
-    pwd
+    You can verify with:
 
-Now create the `.env` file and insert the Google credentials you created earlier:
+        pwd
 
-    cat > .env <<'EOF'
-    GOOGLE_API_KEY=xxxxxxxxxxxxxxxxxxxxxxx
-    GOOGLE_CSE_ID=xxxxxxxxxxxxxxxxxxxxxxxx
-    EOF
+3. Now create the `.env` file and insert the Google credentials you created earlier:
 
-Replace the `x` values with your actual `GOOGLE_API_KEY` and `GOOGLE_CSE_ID`.
+        cat > .env <<'EOF'
+        GOOGLE_API_KEY=xxxxxxxxxxxxxxxxxxxxxxx
+        GOOGLE_CSE_ID=xxxxxxxxxxxxxxxxxxxxxxxx
+        EOF
 
-Important:
-
-- Do **not** commit `.env` to GitHub.
-- Make sure `.gitignore` is configured to exclude `.env`.
+    Replace the `x` values with your actual `GOOGLE_API_KEY` and `GOOGLE_CSE_ID`.
 
 At this point, the project is configured with the Google credentials it needs.
 
