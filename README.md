@@ -60,12 +60,13 @@ You will need:
 - Docker Desktop  
 - Git  
 - A Google Developer Console account  
-- MacOS, Linux, or Windows with WSL2  
+- macOS, Linux, or Windows with WSL2  
 
-### ⚠️ Performance Notice for MacOS (M-Series Recommended)
+**⚠️ Performance Notice for macOS (M-Series Recommended)**
 
-Running Ollama **inside Docker** is significantly slower on macOS because virtualization prevents Metal acceleration.  
-For an M1/M2/M3 Mac, you must increase Docker’s resource allocation if you keep Ollama in Docker.
+Running Ollama **inside Docker** is significantly slower on macOS because virtualisation prevents direct access to Apple’s GPU and Metal acceleration. Running Ollama locally on a Mac M3 improved the performance by around a factor of 5.
+
+For an M1/M2/M3/M4 Mac, you must increase Docker’s resource allocation if you keep Ollama in Docker.
 
 Recommended Docker Desktop settings (for a 64 GB M3 MacBook Pro):
 
