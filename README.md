@@ -120,7 +120,8 @@ If this is your first time in Google Developer Console, Google will automaticall
 1. In the top search bar, type:
 
        Custom Search API
-       
+
+<img src="images/CustomSearchDropdown.png" alt="Custom Search" width="50%"> 
 
 3. Click the result named **Custom Search API**.  
 4. Click the **Enable** button.
