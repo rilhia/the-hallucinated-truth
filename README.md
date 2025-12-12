@@ -123,14 +123,18 @@ If this is your first time in Google Developer Console, Google will automaticall
 
 <img src="images/CustomSearchDropdown.png" alt="Custom Search" width="50%"> 
 
-3. Click the result named **Custom Search API**.  
-4. Click the **Enable** button.
+2. Click the result named **Custom Search API**.
+
+<img src="images/Google Custom Serach API.png" alt="Custom Search API Page" width="100%">
+
+3. Click the **Enable** button.
 
 If this is your first time, enabling the API may also create your first project automatically.
 
 ---
 
 ### 1.4 Create an API Key (GOOGLE_API_KEY)
+
 
 1. In the left sidebar, click **Credentials**.  
 2. At the top, click **+ Create Credentials**.  
