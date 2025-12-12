@@ -1,3 +1,4 @@
+![The Hallucinated Truth](images/TitleImage.png)
 # The Hallucinated Truth
 
 A game that evolved from looking into learning [Temporal](https://temporal.io/) for a job application.
