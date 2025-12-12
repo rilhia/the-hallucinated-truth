@@ -91,7 +91,7 @@ These will be added to a `.env` file later.
 
 ---
 
-### 1.1 Create or Log Into Google Developer Console
+### 1.1 Create or Log-in to Google Developer Console
 
 Go to:
 
@@ -111,7 +111,7 @@ If you already have several projects, it’s cleaner to make a new one:
 3. Give it a name (for example: `llama-agent-search`).  
 4. Click **Create**.
 
-If this is your first time in Google Developer Console, Google may automatically create a default project such as **My First Project**.
+If this is your first time in Google Developer Console, Google will automatically create a default project such as **My First Project** when you carry out the next step.
 
 ---
 
@@ -120,9 +120,10 @@ If this is your first time in Google Developer Console, Google may automatically
 1. In the top search bar, type:
 
        Custom Search API
+       
 
-2. Click the result named **Custom Search API**.  
-3. Click the **Enable** button.
+3. Click the result named **Custom Search API**.  
+4. Click the **Enable** button.
 
 If this is your first time, enabling the API may also create your first project automatically.
 
