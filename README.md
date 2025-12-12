@@ -22,18 +22,20 @@ This project is a blend of [Temporal](https://temporal.io/), [LangChain](https:/
 
 ## Table of Contents
 
-1. Overview  
-2. Prerequisites  
-3. Create Google Custom Search Credentials  
-    - Create or Log Into Google Developer Console  
-    - Create a New Project  
-    - Enable the Custom Search API  
-    - Create an API Key  
-    - Create a Programmable Search Engine (CSE)  
-4. Install and Run Temporal  
-5. Clone This Repository and Configure Environment Variables  
-6. Start the Application  
-7. Troubleshooting  
+1. [Overview](#overview)
+2. [Prerequisites](#prerequisites)
+3. [Create Google Custom Search Credentials](#1-create-google-custom-search-credentials)
+   - [Log-in to Google Developer Console](#11-log-in-to-google-developer-console)
+   - [Create a New Project](#12-create-a-new-project)
+   - [Enable the Custom Search API](#13-enable-the-custom-search-api)
+   - [Create an API Key](#14-create-an-api-key-google_api_key)
+   - [Create a Programmable Search Engine](#15-create-a-programmable-search-engine-google_cse_id)
+4. [Install and Run Temporal](#2-install-and-run-temporal)
+5. [Clone This Repository and Configure Environment Variables](#3-clone-this-repository-and-configure-environment-variables)
+6. [Start the Application](#4-start-the-application)
+7. [Run Ollama Natively (Optional)](#5-optional-running-ollama-natively-for-better-performance-highly-recommended)
+8. [Using the App](#6-using-the-app-high-level)
+9. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -369,7 +371,7 @@ Ensure native Ollama is running:
 
 ---
 
-## 5. Using the App (High-Level)
+## 6. Using the App (High-Level)
 
 Once the app is running:
 
