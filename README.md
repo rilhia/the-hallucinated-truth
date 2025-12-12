@@ -42,11 +42,10 @@ This project is a blend of [Temporal](https://temporal.io/), [LangChain](https:/
 This project bundles:
 
 - A **Temporal workflow** controlling the game logic  
-- A **LangChain agent** using `llama3:latest` for reasoning  
+- A **LangChain agent** using `llama3:latest` for reasoning and **Google Custom Search API** to find truths
 - An **Ollama server** to run the model locally  
-- A **Google Custom Search** integration for grounded facts  
 - An **NGINX web interface**  
-- An optional **Open WebUI** for interacting with Ollama directly  
+- An optional **Open WebUI** for interacting with Ollama directly
 
 The result is a playable “truth-finding” game where the LLM makes statements, you interrogate them, and Temporal orchestrates the entire back-and-forth.
 
@@ -59,9 +58,9 @@ You will need:
 - Docker Desktop  
 - Git  
 - A Google Developer Console account  
-- macOS, Linux, or Windows with WSL2  
+- MacOS, Linux, or Windows with WSL2  
 
-### ⚠️ Performance Notice for macOS (M-Series Recommended)
+### ⚠️ Performance Notice for MacOS (M-Series Recommended)
 
 Running Ollama **inside Docker** is significantly slower on macOS because virtualization prevents Metal acceleration.  
 For an M1/M2/M3 Mac, you must increase Docker’s resource allocation if you keep Ollama in Docker.
