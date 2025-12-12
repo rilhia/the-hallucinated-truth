@@ -91,7 +91,7 @@ These will be added to a `.env` file later.
 
 ---
 
-### 1.1 Create or Log-in to Google Developer Console
+### 1.1 Log-in to Google Developer Console
 
 Go to:
 
@@ -129,7 +129,7 @@ If this is your first time in Google Developer Console, Google will automaticall
 
 3. Click the **Enable** button.
 
-If this is your first time, enabling the API may also create your first project automatically.
+If this is your first time using Google Developer Console, enabling the API will also create your first project automatically.
 
 ---
 
@@ -140,9 +140,15 @@ If this is your first time, enabling the API may also create your first project 
 
 <img src="images/GoogleSearchAPICredentials.png" alt="Custom Search Credentials" width="100%"> 
 
-2. At the top, click **+ Create Credentials**.  
+2. At the top, click **+ Create Credentials**.
+
+<img src="images/SelectAPIKey.png" alt="Create Credentials Options" width="100%">    
+
 3. Select **API key**.  
-4. A sidebar appears showing your new key.
+
+4. A sidebar appears for you to configure your new key.
+
+<img src="images/CreateAPIKey.png" alt="Create API Sidebar" width="100%">
 
 Now restrict it:
 
@@ -151,26 +157,33 @@ Now restrict it:
 3. Choose **Custom Search API** from the dropdown.  
 4. Save your changes.
 
+<img src="images/APIKey.png" alt="API Key" width="100%">
+
 Copy the generated key – this is your:
 
     GOOGLE_API_KEY
 
-Keep it somewhere safe and do **not** commit it to GitHub.
+Keep it somewhere safe.
 
 ---
 
 ### 1.5 Create a Programmable Search Engine (GOOGLE_CSE_ID)
 
-Now create the Programmable Search Engine that will back the Custom Search API:
+Now we need to create the Programmable Search Engine that will back the Custom Search API:
 
 1. Go to:
 
        https://programmablesearchengine.google.com/
 
-2. Click **Add**.  
-3. Give your search engine a name.  
-4. Configure it so it can search the **entire web**.  
-5. Click **Create**.
+<img src="images/ProgrammableSearchEngine.png" alt="Programmable Search Engine" width="100%">
+
+3. Click **Add**.  
+4. Give your search engine a name.
+
+<img src="images/CreateSearchEngine.png" alt="Create Search Engine" width="100%">
+
+5. Configure it so it can search the **entire web**.  
+6. Click **Create**.
 
 You will then see an embed snippet that looks something like:
 
