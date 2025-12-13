@@ -31,6 +31,15 @@ export function fixMainPromptOutput(str) {
   // STEP 3: Remove <<<END>>> in all valid forms (your existing logic)
   //
 
+  // Force <<<END>>> to be the end of the string
+
+  const END_MARKER = "<<<END>>>";
+  const endIndex = original.indexOf(END_MARKER);
+
+  if (endIndex !== -1) {
+    original = original.slice(0, endIndex);
+  }
+
   // CASE 1: ends with } + newline + <<<END>>>
   if (
     original.endsWith("}\n<<<END>>>") ||
