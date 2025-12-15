@@ -1,30 +1,100 @@
+/**
+ * Frontend controller for The Hallucinated Truth game.
+ * Handles UI state, user interactions, typing effects, polling,
+ * and replaying game state from the backend API.
+ * This file is intentionally stateful and DOM-driven.
+ */
+
 // ------------------------------------------------------------
 //  GLOBAL STATE
 // ------------------------------------------------------------
+
+/**
+ * Current game identifier returned by the backend.
+ * @type {string|null}
+ */
 let gameId = null;
+
+/**
+ * Subject provided by the user for the story.
+ * @type {string|null}
+ */
 let gameSubject = null;
+
+/**
+ * Timestamp of the last reply received from the backend.
+ * Used to detect state changes during polling.
+ * @type {string}
+ */
 let lastReplyTime = "";
+
+/**
+ * Interval handle for the animated typing noise effect.
+ * @type {number|null}
+ */
 let typingInterval = null;
+
+/**
+ * DOM element currently used to render typing output.
+ * @type {HTMLElement|null}
+ */
 let typingElement = null;
+
+/**
+ * Tracks which dropdown was last interacted with
+ * to determine which game list to load from.
+ * @type {string|null}
+ */
 let lastSelectedDropdown = null;
 
+/**
+ * Character set used to generate typing noise.
+ * @type {string}
+ */
 const noiseChars = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()[]{}<>?+-=_";
 
+/**
+ * Hostname for API requests, derived from current location.
+ * @type {string}
+ */
 const apiHost = window.location.hostname;
+
+/**
+ * API port for backend communication.
+ * @type {string}
+ */
 const apiPort = "3023";
 
 
 // ------------------------------------------------------------
 //  HELPERS
 // ------------------------------------------------------------
+
+/**
+ * Shorthand DOM lookup by element ID.
+ * @param {string} id
+ * @returns {HTMLElement}
+ */
 function $(id) {
   return document.getElementById(id);
 }
 
+/**
+ * Show or hide an element by toggling the "hidden" class.
+ * @param {string} id
+ * @param {boolean} visible
+ */
 function setDisplay(id, visible) {
   $(id).classList.toggle("hidden", !visible);
 }
 
+/**
+ * POST JSON data to an endpoint and return parsed JSON.
+ * Gracefully falls back to an empty object on parse failure.
+ * @param {string} url
+ * @param {object} body
+ * @returns {Promise<object>}
+ */
 async function postJSON(url, body) {
   return fetch(url, {
     method: "POST",
@@ -33,6 +103,12 @@ async function postJSON(url, body) {
   }).then(r => r.json().catch(() => ({})));
 }
 
+/**
+ * Escape user-provided text for safe HTML rendering.
+ * Converts newlines into <br> tags.
+ * @param {string} text
+ * @returns {string}
+ */
 function safeHTMLText(text) {
   return text
     .replace(/&/g, '&amp;')
@@ -41,23 +117,46 @@ function safeHTMLText(text) {
     .replace(/\r?\n/g, '<br>');
 }
 
+/**
+ * Append a message to the log output area.
+ * Automatically scrolls to the bottom.
+ * @param {string} msg
+ */
 function log(msg) {
   const box = $("log");
   box.innerHTML += `<div class="messageBoxText">${msg}</div>`;
   box.scrollTop = box.scrollHeight;
 }
 
+/**
+ * Clear all content from the log output area.
+ */
 function clearLog() {
   $("log").innerHTML = "";
 }
 
+/**
+ * Hidden phrase slowly revealed within the typing noise.
+ * @type {string}
+ */
 const hiddenPhrase = "the hallucinated truth";
+
+/**
+ * Current index into the hidden phrase.
+ * @type {number}
+ */
 let hiddenIndex = 0;
 
 
 // ------------------------------------------------------------
 //  TYPING EFFECT
 // ------------------------------------------------------------
+
+/**
+ * Start animated typing noise in the log.
+ * Random characters are emitted with occasional
+ * characters from the hidden phrase.
+ */
 function logTypingStart() {
   const box = $("log");
 
@@ -88,12 +187,19 @@ function logTypingStart() {
   }, 35);
 }
 
+/**
+ * Stop the animated typing noise.
+ */
 function logTypingStop() {
   clearInterval(typingInterval);
   typingInterval = null;
-  if (typingElement) typingElement.innerHTML = "";
 }
 
+/**
+ * Replace typing noise with the real message,
+ * animated character by character.
+ * @param {string} text
+ */
 function logTypingRealMessage(text) {
   if (!typingElement) return;
 
@@ -112,6 +218,13 @@ function logTypingRealMessage(text) {
 // ------------------------------------------------------------
 //  SUMMARY BUILDER
 // ------------------------------------------------------------
+
+/**
+ * Build an HTML summary of user guesses, correct answers,
+ * missed truths, and sources at the end of a game.
+ * @param {object} state
+ * @returns {string}
+ */
 function buildSummary(state) {
   let html = "<br><b>Your Attempts</b><br><br>";
 
@@ -151,6 +264,10 @@ function buildSummary(state) {
 // ------------------------------------------------------------
 //  GAME INTERACTIONS
 // ------------------------------------------------------------
+
+/**
+ * Create a new game session.
+ */
 $("startBtn").onclick = async () => {
   const data = await postJSON(`http://${apiHost}:${apiPort}/api/start`, {});
 
@@ -165,6 +282,9 @@ $("startBtn").onclick = async () => {
   log("🟢 Game created. Click 'Generate Story' to begin.");
 };
 
+/**
+ * Initialize story generation with the provided subject.
+ */
 $("initBtn").onclick = async () => {
   if (!gameId) return;
 
@@ -178,6 +298,9 @@ $("initBtn").onclick = async () => {
   logTypingStart();
 };
 
+/**
+ * Submit a truth explanation guess.
+ */
 $("explainBtn").onclick = async () => {
   const text = $("truthExplain").value.trim();
   if (!text) return;
@@ -191,6 +314,9 @@ $("explainBtn").onclick = async () => {
   $("truthExplain").value = "";
 };
 
+/**
+ * Signal that the user has no more guesses.
+ */
 $("noMoreTruthsBtn").onclick = async () => {
   await postJSON(`http://${apiHost}:${apiPort}/api/end`, { gameId });
 };
@@ -199,6 +325,10 @@ $("noMoreTruthsBtn").onclick = async () => {
 // ------------------------------------------------------------
 //  LOAD GAME
 // ------------------------------------------------------------
+
+/**
+ * Track last-used dropdown for loading games.
+ */
 $("completedDropdown").onchange = () => {
   lastSelectedDropdown = "completedDropdown";
 };
@@ -207,6 +337,9 @@ $("inProgressDropdown").onchange = () => {
   lastSelectedDropdown = "inProgressDropdown";
 };
 
+/**
+ * Load a selected game based on dropdown selection.
+ */
 $("loadGameBtn").onclick = async () => {
   let id = null;
 
@@ -220,6 +353,10 @@ $("loadGameBtn").onclick = async () => {
   loadGame(id);
 };
 
+/**
+ * Fetch game state and replay it in the UI.
+ * @param {string} id
+ */
 async function loadGame(id) {
   const res = await fetch(`http://${apiHost}:${apiPort}/api/state/${id}`);
   const state = await res.json();
@@ -239,6 +376,11 @@ async function loadGame(id) {
 // ------------------------------------------------------------
 //  REPLAY LOGIC
 // ------------------------------------------------------------
+
+/**
+ * Reconstruct the UI from a saved game state.
+ * @param {object} state
+ */
 function replayGameFromState(state) {
   logTypingStop();
   $("log").innerHTML = "";
@@ -290,6 +432,10 @@ function replayGameFromState(state) {
 // ------------------------------------------------------------
 //  POPULATE GAME LISTS
 // ------------------------------------------------------------
+
+/**
+ * Refresh dropdowns with active and completed games.
+ */
 async function refreshDropdowns() {
   const res = await fetch(`http://${apiHost}:${apiPort}/api/games`);
   const { active, completed } = await res.json();
@@ -306,6 +452,12 @@ refreshDropdowns();
 // ------------------------------------------------------------
 //  POLLING
 // ------------------------------------------------------------
+
+/**
+ * Poll backend for game state updates.
+ * Drives story delivery, validation feedback,
+ * and game completion handling.
+ */
 async function pollState() {
   if (!gameId) return;
 
@@ -353,3 +505,5 @@ async function pollState() {
 }
 
 setInterval(pollState, 500);
+
+
