@@ -24,11 +24,10 @@ import { initialGamePrompt, buildJudgePrompt } from "../helpers/promptBuilder.js
  * @typedef {Object} Activities
  * @property {function(string): Promise<string>} askOllama - LLM call to Ollama.
  * @property {function(string): Promise<any>} searchGoogle - Google CSE search.
- * @property {function(string): Promise<any>} extractFactsActivity - Fact extraction activity.
  * @property {function(any,string): Promise<Array<{fact:string,url:string}>>} getFactsFromWeb - Extract and return facts from search results.
  * @property {function(Array): Promise<Array>} reduceKnownFacts - Filters and deduplicates collected facts.
  */
-const { askOllama, searchGoogle, extractFactsActivity, getFactsFromWeb, reduceKnownFacts } =
+const { askOllama, searchGoogle, getFactsFromWeb, reduceKnownFacts } =
   proxyActivities({
     startToCloseTimeout: "5 minutes",
   });
@@ -37,14 +36,8 @@ const { askOllama, searchGoogle, extractFactsActivity, getFactsFromWeb, reduceKn
 //  SIGNALS + QUERIES
 // ------------------------------------------------------------
 
-/** Signal: Trigger Google search and begin game initialisation. */
-export const searchGoogleSignal = defineSignal("searchGoogle");
-
-/** Signal: Collect factual data from search results. */
-export const collectFactsSignal = defineSignal("collectFacts");
-
-/** Signal: Filter facts, generate story prompt, and start core gameplay. */
-export const filterFactsSignal = defineSignal("filterFacts");
+/** Signal: Start processing the game after the user adds a theme */
+export const startProcessingGameSignal = defineSignal("startProcessingGame");
 
 /** Signal: User submits an explanation of a truth. */
 export const explainTruthSignal = defineSignal("explainTruth");
@@ -150,82 +143,51 @@ export async function hallucinatedTruthWorkflow() {
     lastReplyTime = new Date().toISOString();
   };
 
+
   // ------------------------------------------------------------
-  //  Search Google
+  //  Start Processing Game
   // ------------------------------------------------------------
 
   /**
    * Signal handler: Initiates the Google search + starts game setup.
    * @param {string} promptSubjectArg - The subject provided by the user.
    */
-  setHandler(searchGoogleSignal, async (promptSubjectArg) => {
+  setHandler(startProcessingGameSignal, async (promptSubjectArg) => {
     if (gameStarted) return;
     gameStarted = true;
 
     subject = promptSubjectArg;
-
-    googleResults = await searchGoogle(promptSubjectArg);
-
-    numFound = 0;
     stage = 1;
-  });
 
-  // ------------------------------------------------------------
-  //  START GAME (Collect facts)
-  // ------------------------------------------------------------
+    // 1. Search
+    googleResults = await searchGoogle(subject);
 
-  /**
-   * Signal handler: Fetches facts from the web based on googleResults.
-   * Waits until the Google search has completed.
-   */
-  setHandler(collectFactsSignal, async () => {
-    await condition(() => googleResults !== null);
-
-    console.log("CollectFacts running with googleResults:", googleResults);
-
+    // 2. Extract facts
     knownFacts = await getFactsFromWeb(googleResults, subject);
 
-    stage = 1;
-  });
-
-  // ------------------------------------------------------------
-  //  START GAME (Filter facts + Build story)
-  // ------------------------------------------------------------
-
-  /**
-   * Signal handler: Filters facts, builds the story prompt, queries Ollama,
-   * parses the output, and prepares the STORY for gameplay.
-   */
-  setHandler(filterFactsSignal, async () => {
-    await condition(() => knownFacts !== null);
-
-    if (knownFacts.length > 0) {
-      console.log("FilterFacts running with collected facts:", knownFacts);
-
-      knownFacts = await reduceKnownFacts(knownFacts);
-
-      const prompt = initialGamePrompt(subject, knownFacts || []);
-      const raw = await askOllama(prompt);
-
-      const cleanedOutput = fixMainPromptOutput(raw);
-      updateReply(cleanedOutput);
-
-      const parsed = safeParseJson(cleanedOutput);
-      if (!parsed || !parsed.STORY) {
-        story = [];
-        stage = 1;
-        return;
-      }
-
-      story = parsed.STORY;
-      numFound = 0;
-      stage = 1;
-    } else {
+    if (!knownFacts || knownFacts.length === 0) {
       updateReply(`It was not possible to generate a story about "${subject}". Try something different.`);
       stage = -1;
       finished = true;
+      return;
     }
+
+    // 3. Reduce facts
+    knownFacts = await reduceKnownFacts(knownFacts);
+
+    // 4. Generate story
+    const prompt = initialGamePrompt(subject, knownFacts);
+    const raw = await askOllama(prompt);
+
+    const cleanedOutput = fixMainPromptOutput(raw);
+    updateReply(cleanedOutput);
+
+    const parsed = safeParseJson(cleanedOutput);
+    story = parsed?.STORY ?? [];
+
+    numFound = 0;
   });
+
 
   // ------------------------------------------------------------
   //  USER SAYS: "NO MORE TRUTHS"
