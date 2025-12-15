@@ -4,7 +4,6 @@ import cors from "cors";
 import startRoute from "./routes/start.js";
 import initRoute from "./routes/init.js";
 import endRoute from "./routes/end.js";
-import guessCountRoute from "./routes/guessCount.js";
 import explainTruthRoute from "./routes/explainTruth.js";
 import stateRoute from "./routes/state.js";
 import listGamesRoute from "./routes/listGames.js";
@@ -50,12 +49,6 @@ app.use("/api/init", initRoute);
  * @route POST /api/end
  */
 app.use("/api/end", endRoute);
-
-/**
- * Route: Retrieve the number of guesses made so far.
- * @route GET|POST /api/guessCount
- */
-app.use("/api/guessCount", guessCountRoute);
 
 /**
  * Route: Submit a truth explanation attempt for verification.
