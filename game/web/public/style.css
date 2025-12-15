@@ -133,7 +133,7 @@ button:active {
 .log { 
   background: rgba(15, 15, 15, 0.9);
   padding: 12px;
-  height:  50dvh;
+  height: 50dvh;
   overflow-y: auto;
   margin-top: 20px;
   border-radius: 8px;
