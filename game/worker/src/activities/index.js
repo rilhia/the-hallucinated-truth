@@ -5,7 +5,6 @@
  * are registered with the Temporal worker.
  */
 export * from './askOllama.js';
-export * from './extractFacts.js';
 export * from './searchGoogle.js';
 export * from './getFactsFromWeb.js';
 export * from './extractMainTextWithCheerio.js';
