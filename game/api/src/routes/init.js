@@ -17,15 +17,8 @@ router.post("/", async (req, res) => {
     const client = await getTemporalClient();
     const handle = client.workflow.getHandle(gameId);
 
-    await handle.signal("searchGoogle", promptSubject);
+    await handle.signal("startProcessingGame", promptSubject);
     
-    await handle.signal("collectFacts");
-    
-    await handle.signal("filterFacts");
-    
-
-
-
     res.json({ ok: true });
   } catch (err) {
     console.error("/api/init error:", err);
