@@ -7,7 +7,7 @@ This README explains how to install, configure, and run the entire stack locally
 
 ## 💡 About the Game — Where “The Hallucinated Truth” Came From
 
-The Hallucinated Truth is inspired by the BBC radio comedy panel show [“The Unbelievable Truth”](https://en.wikipedia.org/wiki/The_Unbelievable_Truth_(radio_show)).
+The Hallucinated Truth is inspired by the BBC radio comedy panel show [“The Unbelievable Truth”](https://en.wikipedia.org/wiki/The_Unbelievable_Truth_(radio_show)). Depending on your region (or a VPN) you may be able to sample it on YouTube [here](https://www.youtube.com/watch?v=J7m6qiBdxhA).
 In that show, a contestant delivers a story on a given topic where nearly everything is nonsense...apart from a few true statements which are hidden inside.
 The other players must spot and call out the truths buried within the lies.
 
