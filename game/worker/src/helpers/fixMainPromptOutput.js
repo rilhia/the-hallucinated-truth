@@ -10,61 +10,33 @@
 export function fixMainPromptOutput(str) {
   if (!str) return str;
 
-	console.log("OUTPUT TO BE MODIFIED:"+str);
-	
+  console.log("OUTPUT TO BE MODIFIED:" + str);
+
   let original = str;
 
+  const START = "<<<START>>>";
+  const END   = "<<<END>>>";
+
   //
-  // STEP 1: If <<<START>>> exists, strip everything before it
+  // STEP 1: Find LAST <<<START>>> and LAST <<<END>>>
   //
-  const startIndex = original.indexOf("<<<START>>>");
-  if (startIndex !== -1) {
-    original = original.slice(startIndex + "<<<START>>>".length);
+  const startIndex = original.lastIndexOf(START);
+  const endIndex   = original.lastIndexOf(END);
+
+  if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
+    original = original.slice(
+      startIndex + START.length,
+      endIndex
+    );
   }
 
   //
-  // STEP 2: Trim leading whitespace/newlines after <<<START>>>
+  // STEP 2: Trim whitespace
   //
-  original = original.replace(/^\s+/, "");
-
-  //
-  // STEP 3: Remove <<<END>>> in all valid forms (your existing logic)
-  //
-
-  // Force <<<END>>> to be the end of the string
-
-  const END_MARKER = "<<<END>>>";
-  const endIndex = original.indexOf(END_MARKER);
-
-  if (endIndex !== -1) {
-    original = original.slice(0, endIndex);
-  }
-
-  // CASE 1: ends with } + newline + <<<END>>>
-  if (
-    original.endsWith("}\n<<<END>>>") ||
-    original.endsWith("}\r\n<<<END>>>") ||
-    original.endsWith("}\\n<<<END>>>") // escaped newline
-  ) {
-    return original.replace(/}\s*(?:\\n|\r?\n)<<<END>>>$/, "}");
-  }
-
-  // CASE 2: ends with newline + END marker (missing brace)
-  if (
-    original.endsWith("\n<<<END>>>") ||
-    original.endsWith("\r\n<<<END>>>") ||
-    original.endsWith("\\n<<<END>>>")
-  ) {
-    return original.replace(/(?:\\n|\r?\n)<<<END>>>$/, "}");
-  }
-
-  // CASE 3: ends with <<<END>>> directly
-  if (original.endsWith("<<<END>>>")) {
-    return original.slice(0, -"<<<END>>>".length) + "}";
-  }
+  original = original.trim();
 
   //
-  // STEP 4: Return cleaned string
+  // STEP 3: Return cleaned JSON string
   //
   return original;
 }
