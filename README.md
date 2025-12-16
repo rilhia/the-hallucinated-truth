@@ -8,13 +8,15 @@ This README explains how to install, configure, and run the entire stack locally
 ## 💡 About the Game — Where “The Hallucinated Truth” Came From
 
 The Hallucinated Truth is inspired by the BBC radio comedy panel show [“The Unbelievable Truth”](https://en.wikipedia.org/wiki/The_Unbelievable_Truth_(radio_show)). Depending on your region (or a VPN) you may be able to sample it on YouTube [here](https://www.youtube.com/watch?v=J7m6qiBdxhA).
-In that show, a contestant delivers a story on a given topic where nearly everything is nonsense...apart from a few true statements which are hidden inside.
+
+In this show, a contestant delivers a story on a given topic where nearly everything is nonsense...apart from a few true statements which are hidden inside.
 The other players must spot and call out the truths buried within the lies.
 
 I thought it would be fun to recreate this format using an LLM.
 
-Large Language Models hallucinate all the time, so instead of avoiding that behaviour, this game leans into it.
-The agent generates a story filled with believable and unbelievable nonsense, hides real facts inside it, and your task is to uncover the truths.
+LinkedIn and other social media locations full of "AI Experts" have a constant theme of people finding new ways to complain about hallucinations. So I thought I would lean into this and instead of avoiding this behaviour, I'd write something to play with this theme.
+
+The game generates a story (using an LLM) filled with believable and unbelievable nonsense, hides real facts inside it, and your task is to uncover the truths.
 
 This project is a blend of [Temporal](https://temporal.io/), [LangChain](https://www.langchain.com/), [Ollama](https://ollama.com/), [Custom Google Search API](https://developers.google.com/custom-search/v1/introduction), some Javascript and a handful of overly verbose prompts to let an LLM play a variant of “The Unbelievable Truth” against you.
 
