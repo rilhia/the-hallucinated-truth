@@ -384,20 +384,204 @@ Ensure native Ollama is running:
 
 ---
 
-## Using the App (High-Level)
+## Using the App (Detailed Walkthrough)
 
-Once the app is running:
+Once the stack is running via Docker Compose, you will have **three separate web interfaces** available. Each serves a different purpose and together they form the full game system.
 
-- The **frontend** runs on `http://localhost:8085/`.  
-- **Temporal** is accessible at `http://localhost:8080/` to inspect workflows, task queues, and history.  
-- **Ollama** runs locally and serves the `llama3:latest` model used by the agent.  
-- The app calls Google Custom Search via your configured key and CSE ID to ground its reasoning in real data.
+---
 
-Depending on how the UI is implemented in this repository, you may see:
+### Available Web Interfaces
 
-- A way to start a new game session.  
-- Some controls to ask questions, reveal truths, or challenge claims.  
-- (Optionally) links to debug or observe the Temporal workflows.
+| Service | URL | Purpose |
+|------|----|----|
+| Game UI | http://localhost:8085/ | Play *The Hallucinated Truth* |
+| Temporal Web UI | http://localhost:8080/ | Inspect workflows, activities, and execution history |
+| OpenWebUI (Ollama) | http://localhost:3000/ | Optional UI for interacting directly with your local LLM |
+
+---
+
+## 1. The Game UI (http://localhost:8085/)
+
+This is where the game is played.
+
+### Starting the Game
+
+1. Open **http://localhost:8085/**
+2. You will see an initial screen that allows you to:
+   - Resume an existing game
+   - Inspect a game already in progress
+   - Start a new game
+
+3. Click **Start New Game**
+
+---
+
+### Selecting a Subject
+
+You will be prompted to choose a subject for the game.
+
+- Enter a subject name (for example: **Gene Wilder**)
+- Click **Generate Story**
+
+At this point the game begins its backend processing.
+
+---
+
+### Story Generation Phase
+
+While the story is being generated you will see live status updates in the UI.
+
+Behind the scenes, the following happens:
+
+1. The game searches the web using **Google Custom Search**
+2. A small set of real, verifiable facts is extracted
+3. These facts are passed to the LLM
+4. The LLM generates a long, absurd story where:
+   - Most statements are fabricated
+   - A small number of true facts are deliberately embedded
+
+This phase can take some time depending on:
+- Your machine’s performance
+- Whether Ollama is running inside Docker or directly on your host
+
+Once complete, the full story is rendered in the UI.
+
+---
+
+### Identifying the Hidden Truths
+
+After the story appears, a new section becomes visible:
+
+**“Explain each truth one by one”**
+
+This section contains:
+- A text input field
+- A **Submit Explanation** button
+- A **No More Truths** button
+
+Your task is to read the story carefully and identify real facts hidden among the hallucinations.
+
+#### Submitting a Guess
+
+1. Type a description of a fact you believe is true
+2. Click **Submit Explanation**
+
+Important details:
+- This is **not** a string match
+- The LLM is used to evaluate *semantic intent*
+- You only need to describe the fact correctly, not quote it verbatim
+
+##### Possible Outcomes
+
+- ❌ **Incorrect**
+  - Your explanation does not match any embedded truth
+- ✔ **Correct**
+  - The game shows:
+    - The exact factual statement
+    - One or more source links where the fact was found
+
+---
+
+### Ending the Game
+
+When you believe you have found all the hidden truths:
+
+1. Click **No More Truths**
+
+The game will then display a full review, including:
+- All your guesses
+- Which guesses were correct
+- Which truths were missed
+- Source links for every factual statement
+- A final score
+
+---
+
+### Example Game Output
+
+**Game Summary**
+- Correct guesses
+- Incorrect guesses
+- Missed truths with sources
+- Final score
+
+---
+
+## 2. Temporal Web UI (http://localhost:8080/)
+
+Temporal is responsible for orchestrating the game logic.
+
+### How Temporal Is Used
+
+- **Each game session is a Temporal workflow**
+- Each step of the game is handled by **activities**, such as:
+  - Searching Google
+  - Extracting facts
+  - Reducing fact lists
+  - Calling the LLM
+  - Evaluating player guesses
+  - Scoring the game
+
+Temporal ensures that:
+- Long-running operations are reliable
+- Game state is preserved
+- Each step can be inspected and replayed
+
+### Inspecting a Game Workflow
+
+1. Open **http://localhost:8080/**
+2. Go to **Workflows**
+3. Locate the workflow corresponding to your game session
+4. Click into it to inspect:
+   - Execution history
+   - Activity inputs and outputs
+   - Timing and retries
+   - Signals sent from the UI
+
+This is particularly useful if you want to understand *how the game actually runs*, or if you are debugging or extending the system.
+
+*(Screenshot of the Workflows page can be added here)*
+
+---
+
+## 3. OpenWebUI for Ollama (http://localhost:3000/)
+
+OpenWebUI is an optional but useful extra.
+
+### What It Is
+
+- A web interface for interacting directly with your local Ollama models
+- Included primarily for experimentation and exploration
+- **Not required** to play the game
+
+### Using OpenWebUI
+
+1. Open **http://localhost:3000/**
+2. Create a local account
+3. Select a model from the model dropdown (preconfigured for `llama3:latest`)
+4. Start chatting with your own local LLM
+
+This allows you to:
+- Ask arbitrary questions
+- Experiment with prompts
+- Understand how the LLM behaves outside the game
+
+> Note: If you plan to use Ollama heavily, running it directly on your host machine (outside Docker) will usually give better performance. OpenWebUI is included here mainly for convenience and exploration.
+
+*(A screenshot of the model selection dropdown can be added here)*
+
+OpenWebUI documentation:
+https://docs.openwebui.com/
+
+---
+
+## Summary
+
+- **http://localhost:8085/** — Play the game
+- **http://localhost:8080/** — Observe and debug game workflows in Temporal
+- **http://localhost:3000/** — Experiment directly with your local LLM
+
+Together, these components demonstrate how LLMs, orchestration engines, and real-world data can be combined into a structured, inspectable, and deliberately playful system.
 
 ---
 
