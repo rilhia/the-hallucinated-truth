@@ -413,6 +413,8 @@ This is where the game is played.
    - Resume an existing game
    - Inspect a game already in progress
    - Start a new game
+ 
+  <kbd><img src="images/Game_1.png" alt="Opening Screen"></kbd>
 
 3. Click **Start New Game**
 
@@ -423,9 +425,11 @@ This is where the game is played.
 You will be prompted to choose a subject for the game.
 
 - Enter a subject name (for example: **Gene Wilder**)
+<kbd><img src="images/Game_2.png" alt="Start New Game"></kbd>
 - Click **Generate Story**
 
 At this point the game begins its backend processing.
+<kbd><img src="images/Game_3.png" alt="Generating Story"></kbd>
 
 ---
 
@@ -444,9 +448,10 @@ Behind the scenes, the following happens:
 
 This phase can take some time depending on:
 - Your machine’s performance
-- Whether Ollama is running inside Docker or directly on your host
+- Whether Ollama is running inside Docker or directly on your host. As an example, on a Mac M3 with 64GB RAM, it will take around 30 seconds if Ollama is running on the machine. If it is running in a Docker container it can take around 2 or 3 minutes. 
 
 Once complete, the full story is rendered in the UI.
+<kbd><img src="images/Game_4.png" alt="Story Rendered"></kbd>
 
 ---
 
@@ -477,10 +482,15 @@ Important details:
 
 - ❌ **Incorrect**
   - Your explanation does not match any embedded truth
+
+<kbd><img src="images/Game_5.png" alt="Incorrect Guess"></kbd>
+
 - ✔ **Correct**
   - The game shows:
     - The exact factual statement
     - One or more source links where the fact was found
+
+<kbd><img src="images/Game_6.png" alt="Correct Guess"></kbd>
 
 ---
 
@@ -497,15 +507,8 @@ The game will then display a full review, including:
 - Source links for every factual statement
 - A final score
 
----
+<kbd><img src="images/Game_7.png" alt="End of Game"></kbd>
 
-### Example Game Output
-
-**Game Summary**
-- Correct guesses
-- Incorrect guesses
-- Missed truths with sources
-- Final score
 
 ---
 
