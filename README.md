@@ -53,7 +53,7 @@ This project is a blend of [Temporal](https://temporal.io/), [LangChain](https:/
     - [Ending the Game](#ending-the-game)
   - [2. Temporal Web UI (http://localhost:8080/)](#2-temporal-web-ui-httplocalhost8080)
     - [How Temporal Is Used](#how-temporal-is-used)
-    - [Inspecting a Game Workflow](Inspecting a Game Workflow)
+    - [Inspecting a Game Workflow](#inspecting-a-game-workflow)
   - [3. OpenWebUI for Ollama (http://localhost:3000/)](#3-openwebui-for-ollama-httplocalhost3000)
     - [What It Is](#what-it-is)
     - [Using OpenWebUI For The First Time](#using-openwebui-for-the-first-time)
