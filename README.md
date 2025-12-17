@@ -1,7 +1,8 @@
+<kbd>![The Hallucinated Truth](images/TitleImage.png)</kbd>
 # The Hallucinated Truth
 
 A game that evolved from looking into learning [Temporal](https://temporal.io/) for a job application.
-<kbd>![The Hallucinated Truth](images/TitleImage.png)</kbd>
+
 This README explains how to install, configure, and run the entire stack locally using Docker.
 
 ## 💡 About the Game — Where “The Hallucinated Truth” Came From
