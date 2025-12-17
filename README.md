@@ -516,6 +516,8 @@ The game will then display a full review, including:
 
 Temporal is responsible for orchestrating the game logic.
 
+<kbd><img src="images/Temporal_1.png" alt="Temporal UI"></kbd>
+
 ### How Temporal Is Used
 
 - **Each game session is a Temporal workflow**
@@ -539,13 +541,13 @@ Temporal ensures that:
 3. Locate the workflow corresponding to your game session
 4. Click into it to inspect:
    - Execution history
-   - Activity inputs and outputs
+   - Activity inputs and outputs ($${\color{#00964e}Green}$$ circles with trails)
    - Timing and retries
-   - Signals sent from the UI
+   - Signals sent from the UI ($${\color{#d300d8}Purple}$$ circles)
+
+<kbd><img src="images/Temporal_2.png" alt="Temporal Workflow"></kbd>
 
 This is particularly useful if you want to understand *how the game actually runs*, or if you are debugging or extending the system.
-
-*(Screenshot of the Workflows page can be added here)*
 
 ---
 
@@ -553,27 +555,33 @@ This is particularly useful if you want to understand *how the game actually run
 
 OpenWebUI is an optional but useful extra.
 
+<kbd><img src="images/OpenWebUI_6.png" alt="OpenWebUI Example"></kbd>
+
 ### What It Is
 
 - A web interface for interacting directly with your local Ollama models
 - Included primarily for experimentation and exploration
 - **Not required** to play the game
 
-### Using OpenWebUI
+### Using OpenWebUI For The First Time
 
 1. Open **http://localhost:3000/**
-2. Create a local account
-3. Select a model from the model dropdown (preconfigured for `llama3:latest`)
-4. Start chatting with your own local LLM
+<kbd><img src="images/OpenWebUI_1.png" alt="OpenWebUI First Screen"></kbd>
+2. Click on "Get started"
+<kbd><img src="images/OpenWebUI_2.png" alt="OpenWebUI Create Account Screen"></kbd>
+3. Create a local account
+<kbd><img src="images/OpenWebUI_3.png" alt="OpenWebUI Create Account"></kbd>
+4. On the first login, clear the notifications (after reading them of course 😉) and check that `llama3:latest` has been selected in the dropdown in the top left of the screen
+<kbd><img src="images/OpenWebUI_4.png" alt="OpenWebUI First Login"></kbd>
+5. Now try it out!
+<kbd><img src="images/OpenWebUI_5.png" alt="OpenWebUI First Test"></kbd>
 
 This allows you to:
 - Ask arbitrary questions
 - Experiment with prompts
-- Understand how the LLM behaves outside the game
+- Understand how the LLM behaves outside of the game
 
 > Note: If you plan to use Ollama heavily, running it directly on your host machine (outside Docker) will usually give better performance. OpenWebUI is included here mainly for convenience and exploration.
-
-*(A screenshot of the model selection dropdown can be added here)*
 
 OpenWebUI documentation:
 https://docs.openwebui.com/
