@@ -93,6 +93,7 @@ Recommended Docker Desktop settings (for a 64 GB M3 MacBook Pro):
 
 If you want far better performance, you should run **Ollama natively**, not inside a container.  
 A full section below explains how to do this.
+
 ---
 
 ## Create Google Custom Search Credentials
@@ -106,7 +107,7 @@ You will obtain two values:
 
 These will be added to a `.env` file later.
 
----
+
 
 ### Log-in to Google Developer Console
 
@@ -117,7 +118,7 @@ Go to:
 If you don’t already have an account, create one.  
 You do **not** need to add billing details just to test this project.
 
----
+
 
 ### Create a New Project
 
@@ -130,7 +131,7 @@ If you already have several projects, it’s cleaner to make a new one:
 
 If this is your first time in Google Developer Console, Google will automatically create a default project such as **My First Project** when you carry out the next step.
 
----
+
 
 ### Enable the Custom Search API
 
@@ -148,7 +149,7 @@ If this is your first time in Google Developer Console, Google will automaticall
 
 If this is your first time using Google Developer Console, enabling the API will also create your first project automatically.
 
----
+
 
 ### Create an API Key (GOOGLE_API_KEY)
 
@@ -182,7 +183,7 @@ Copy the generated key – this is your:
 
 Keep it somewhere safe.
 
----
+
 
 ### Create a Programmable Search Engine (GOOGLE_CSE_ID)
 
@@ -386,13 +387,12 @@ Ensure native Ollama is running:
 
 ---
 
-## Using the App (Detailed Walkthrough)
+# Using the App (Detailed Walkthrough)
 
 Once the stack is running via Docker Compose, you will have **three separate web interfaces** available. Each serves a different purpose and together they form the full game system.
 
----
 
-### Available Web Interfaces
+## Available Web Interfaces
 
 | Service | URL | Purpose |
 |------|----|----|
@@ -418,7 +418,7 @@ This is where the game is played.
 
 3. Click **Start New Game**
 
----
+
 
 ### Selecting a Subject
 
@@ -431,7 +431,7 @@ You will be prompted to choose a subject for the game.
 At this point the game begins its backend processing.
 <kbd><img src="images/Game_3.png" alt="Generating Story"></kbd>
 
----
+
 
 ### Story Generation Phase
 
@@ -453,7 +453,7 @@ This phase can take some time depending on:
 Once complete, the full story is rendered in the UI.
 <kbd><img src="images/Game_4.png" alt="Story Rendered"></kbd>
 
----
+
 
 ### Identifying the Hidden Truths
 
@@ -492,7 +492,7 @@ Important details:
 
 <kbd><img src="images/Game_6.png" alt="Correct Guess"></kbd>
 
----
+
 
 ### Ending the Game
 
@@ -612,7 +612,7 @@ Together, these components demonstrate how LLMs, orchestration engines, and real
 
       http://localhost:8080/
 
----
+
 
 ### `llama3:latest` model not available
 
@@ -625,7 +625,7 @@ Then restart the app containers:
     cd the-hallucinated-truth
     docker compose up -d
 
----
+
 
 ### `.env` not being picked up
 
@@ -641,7 +641,7 @@ Then restart the app containers:
 
   from inside the `the-hallucinated-truth` directory.
 
----
+
 
 ### Ports already in use
 
@@ -653,7 +653,7 @@ If `8080` or `8085` are already in use:
       docker compose down
       docker compose up -d
 
----
+
 
 ## You’re Ready to Play
 
