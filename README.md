@@ -291,11 +291,11 @@ Next, clone the game and agent code itself.
         pwd
 
 3. Now create the `.env` file and insert the Google credentials you created earlier:
-
-        cat > .env <<'EOF'
-        GOOGLE_API_KEY=xxxxxxxxxxxxxxxxxxxxxxx
-        GOOGLE_CSE_ID=xxxxxxxxxxxxxxxxxxxxxxxx
-        EOF
+        
+       cat > .env <<'EOF'
+       GOOGLE_API_KEY=xxxxxxxxxxxxxxxxxxxxxxx
+       GOOGLE_CSE_ID=xxxxxxxxxxxxxxxxxxxxxxxx
+       EOF
 
     Replace the `x` values with your actual `GOOGLE_API_KEY` and `GOOGLE_CSE_ID`.
 
