@@ -27,6 +27,7 @@ This project is a blend of [Temporal](https://temporal.io/), [LangChain](https:/
 - [The Hallucinated Truth](#the-hallucinated-truth)
   - [About the Game — Where “The Hallucinated Truth” Came From](#-about-the-game--where-the-hallucinated-truth-came-from)
   - [Overview](#overview)
+- [Installation and Configuration](#installation-and-configuration)
   - [Prerequisites](#prerequisites)
   - [Create Google Custom Search Credentials](#create-google-custom-search-credentials)
     - [Log-in to Google Developer Console](#log-in-to-google-developer-console)
@@ -43,6 +44,7 @@ This project is a blend of [Temporal](https://temporal.io/), [LangChain](https:/
     - [Remove Ollama Container From Docker Compose](#remove-ollama-container-from-docker-compose)
     - [Restart Everything](#restart-everything)
     - [Summary](#summary)
+  - [You’re Ready to Play](#youre-ready-to-play)
 - [Using the App (Detailed Walkthrough)](#using-the-app-detailed-walkthrough)
   - [Available Web Interfaces](#available-web-interfaces)
   - [1. The Game UI (http://localhost:8085/)](#1-the-game-ui-httplocalhost8085)
@@ -63,7 +65,6 @@ This project is a blend of [Temporal](https://temporal.io/), [LangChain](https:/
     - [llama3:latest model not available](#llama3latest-model-not-available)
     - [.env not being picked up](#env-not-being-picked-up)
     - [Ports already in use](#ports-already-in-use)
-  - [You’re Ready to Play](#youre-ready-to-play)
 
 ---
 
@@ -80,6 +81,14 @@ This project bundles:
 The result is a playable “truth-finding” game where the LLM makes statements, you interrogate them, and Temporal orchestrates the entire back-and-forth.
 
 ---
+# Installation and Configuration
+
+This section walks through setting up the complete local environment required to run The Hallucinated Truth.
+
+Each step builds on the previous one, and once completed you will have a fully working local stack.
+
+If you are already familiar with Docker-based setups, you can skim. If not, follow the steps in order.
+
 
 ## Prerequisites
 
@@ -401,6 +410,19 @@ Ensure native Ollama is running:
 
 ---
 
+## You’re Ready to Play
+
+With all containers running:
+
+- Temporal is orchestrating workflows.  
+- Ollama is serving `llama3:latest`.  
+- Google Custom Search is providing grounded web results.  
+- The front-end is live at `http://localhost:8085/`.
+
+You can now play **The Hallucinated Truth**, inspect Temporal workflows, and experiment with an LLM that has to justify its own “hallucinations” against real-world data.
+
+---
+
 # Using the App (Detailed Walkthrough)
 
 Once the stack is running via Docker Compose, you will have **three separate web interfaces** available. Each serves a different purpose and together they form the full game system.
@@ -612,9 +634,9 @@ Together, these components demonstrate how LLMs, orchestration engines, and real
 
 ---
 
-## Troubleshooting
+# Troubleshooting
 
-### Temporal UI doesn’t load
+## Temporal UI doesn’t load
 
 - Check that Docker Desktop is running.  
 - Restart the Temporal stack:
@@ -627,8 +649,7 @@ Together, these components demonstrate how LLMs, orchestration engines, and real
       http://localhost:8080/
 
 
-
-### `llama3:latest` model not available
+## `llama3:latest` model not available
 
 If downloading the model via the stack fails, you can try pulling it manually with Ollama (if you have Ollama installed locally):
 
@@ -640,8 +661,7 @@ Then restart the app containers:
     docker compose up -d
 
 
-
-### `.env` not being picked up
+## `.env` not being picked up
 
 - Ensure that:
 
@@ -656,8 +676,7 @@ Then restart the app containers:
   from inside the `the-hallucinated-truth` directory.
 
 
-
-### Ports already in use
+## Ports already in use
 
 If `8080` or `8085` are already in use:
 
@@ -668,14 +687,3 @@ If `8080` or `8085` are already in use:
       docker compose up -d
 
 
-
-## You’re Ready to Play
-
-With all containers running:
-
-- Temporal is orchestrating workflows.  
-- Ollama is serving `llama3:latest`.  
-- Google Custom Search is providing grounded web results.  
-- The front-end is live at `http://localhost:8085/`.
-
-You can now play **The Hallucinated Truth**, inspect Temporal workflows, and experiment with an LLM that has to justify its own “hallucinations” against real-world data.
