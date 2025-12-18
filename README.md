@@ -20,6 +20,8 @@ The game generates a story (using an LLM) filled with believable and unbelievabl
 
 This project is a blend of [Temporal](https://temporal.io/), [LangChain](https://www.langchain.com/), [Ollama](https://ollama.com/), [Custom Google Search API](https://developers.google.com/custom-search/v1/introduction), some Javascript and a handful of overly verbose prompts to let an LLM play a variant of “The Unbelievable Truth” against you.
 
+**It should be noted that this has largely been tested with famous individuals and popular areas of interest as subjects. If you want to extend this, you may need to look into the websites that have been listed to find facts. These may need extending**
+
 ---
 
 ## Table of Contents
