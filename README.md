@@ -1,9 +1,21 @@
-<kbd>![The Hallucinated Truth](images/TitleImage.png)</kbd>
+<div align="center">
+
+<kbd><img src="images/TitleImage.png" alt="The Hallucinated Truth" width="600"></kbd>
+
 # The Hallucinated Truth
+
+![Temporal](https://img.shields.io/badge/Orchestration-Temporal-blue?logo=temporal)
+![LangChain](https://img.shields.io/badge/AI_Framework-LangChain-green?logo=langchain)
+![Ollama](https://img.shields.io/badge/LLM-Ollama-white?logo=ollama)
+![Docker](https://img.shields.io/badge/Deployment-Docker-blue?logo=docker)
 
 A game that evolved from looking into learning [Temporal](https://temporal.io/) for a job application.
 
 This README explains how to install, configure, and run the entire stack locally using Docker.
+
+</div>
+
+---
 
 ## 💡 About the Game — Where “The Hallucinated Truth” Came From
 
@@ -77,12 +89,12 @@ This project bundles:
 - A **Temporal workflow** controlling the game logic  
 - A **LangChain agent** using `llama3:latest` for reasoning and **Google Custom Search API** to find truths
 - An **Ollama server** to run the model locally  
-- An **NGINX web interface**  
-- An optional **Open WebUI** for interacting with Ollama directly
+- An **NGINX web interface** - An optional **Open WebUI** for interacting with Ollama directly
 
 The result is a playable “truth-finding” game where the LLM makes statements, you interrogate them, and Temporal orchestrates the entire back-and-forth.
 
 ---
+
 # Installation and Configuration
 
 This section walks through setting up the complete local environment required to run The Hallucinated Truth.
@@ -101,23 +113,21 @@ You will need:
 - A Google Developer Console account  
 - macOS, Linux, or Windows with WSL2  
 
-**⚠️ Performance Notice for macOS (M-Series Recommended)**
-
-Running Ollama **inside Docker** is significantly slower on macOS because virtualisation prevents direct access to Apple’s GPU and Metal acceleration. Running Ollama locally on a Mac M3 improved the performance by around a factor of 5.
-
-For an M1/M2/M3/M4 Mac, you must increase Docker’s resource allocation if you keep Ollama in Docker.
-
-Recommended Docker Desktop settings (for a 64 GB M3 MacBook Pro):
-
-- CPU: **12 cores**  
-- Memory: **48 GB**  
-- Swap: **2 GB**  
-- Disk image size: **200+ GB**  
-- Resource Saver: Disable or set a long timeout  
-- Virtualization Framework: Default (Apple Virtualization)
-
-If you want far better performance, you should run **Ollama natively**, not inside a container.  
-A full section below explains how to do this.
+> **⚠️ Performance Notice for macOS (M-Series Recommended)**
+>
+> Running Ollama **inside Docker** is significantly slower on macOS because virtualisation prevents direct access to Apple’s GPU and Metal acceleration. Running Ollama locally on a Mac M3 improved the performance by around a factor of 5.
+>
+> For an M1/M2/M3/M4 Mac, you must increase Docker’s resource allocation if you keep Ollama in Docker.
+>
+> **Recommended Docker Desktop settings (for a 64 GB M3 MacBook Pro):**
+> * CPU: **12 cores**
+> * Memory: **48 GB**
+> * Swap: **2 GB**
+> * Disk image size: **200+ GB**
+> * Resource Saver: Disable or set a long timeout
+> * Virtualization Framework: Default (Apple Virtualization)
+>
+> If you want far better performance, you should run **Ollama natively**, not inside a container. A full section below explains how to do this.
 
 ---
 
@@ -132,18 +142,18 @@ You will obtain two values:
 
 These will be added to a `.env` file later.
 
-
+<details>
+<summary><b>Click to expand the Google Credentials Setup Guide</b></summary>
+<br>
 
 ### Log-in to Google Developer Console
 
 Go to:
 
-    https://console.developers.google.com/
+https://console.developers.google.com/
 
 If you don’t already have an account, create one.  
 You do **not** need to add billing details just to test this project.
-
-
 
 ### Create a New Project
 
@@ -156,13 +166,11 @@ If you already have several projects, it’s cleaner to make a new one:
 
 If this is your first time in Google Developer Console, Google will automatically create a default project such as **My First Project** when you carry out the next step.
 
-
-
 ### Enable the Custom Search API
 
 1. In the top search bar, type:
 
-       Custom Search API
+   `Custom Search API`
 
 <kbd><img src="images/CustomSearchDropdown.png" alt="Custom Search"></kbd>
 
@@ -174,10 +182,7 @@ If this is your first time in Google Developer Console, Google will automaticall
 
 If this is your first time using Google Developer Console, enabling the API will also create your first project automatically.
 
-
-
 ### Create an API Key (GOOGLE_API_KEY)
-
 
 1. In the left sidebar, click **Credentials**.
 
@@ -204,11 +209,9 @@ Now restrict it:
 
 Copy the generated key – this is your:
 
-    GOOGLE_API_KEY
+`GOOGLE_API_KEY`
 
 Keep it somewhere safe.
-
-
 
 ### Create a Programmable Search Engine (GOOGLE_CSE_ID)
 
@@ -216,7 +219,7 @@ Now we need to create the Programmable Search Engine that will back the Custom S
 
 1. Go to:
 
-       https://programmablesearchengine.google.com/
+   https://programmablesearchengine.google.com/
 
 <kbd><img src="images/ProgrammableSearchEngine.png" alt="Programmable Search Engine"></kbd>
 
@@ -230,15 +233,19 @@ Now we need to create the Programmable Search Engine that will back the Custom S
 
 You will then see an embed snippet that looks something like:
 
-    <script async src="https://cse.google.com/cse.js?cx=123abc456:def789ghi"></script>
+```html
+<script async src="[https://cse.google.com/cse.js?cx=123abc456:def789ghi](https://cse.google.com/cse.js?cx=123abc456:def789ghi)"></script>
+```
 
 Copy only the value after `cx=`. That is your:
 
-    GOOGLE_CSE_ID
+`GOOGLE_CSE_ID`
 
 <kbd><img src="images/SearchEngineCode.png" alt="Search Engine Code"></kbd>
 
 You now have both values required for the `.env` file.
+
+</details>
 
 ---
 
@@ -250,21 +257,27 @@ You can follow the Temporal instructions [here](https://github.com/temporalio/do
 
 1. Clone the Temporal Docker Compose repository into a suitable folder (for example, wherever you keep your Docker-related projects):
 
-        git clone https://github.com/temporalio/docker-compose.git ./temporal
+   ```bash
+   git clone [https://github.com/temporalio/docker-compose.git](https://github.com/temporalio/docker-compose.git) ./temporal
+   ```
 
 2. Move into the new directory:
 
-        cd temporal
+   ```bash
+   cd temporal
+   ```
 
 3. Start Temporal with Docker Compose:
 
-        docker compose up -d
+   ```bash
+   docker compose up -d
+   ```
 
-    Docker will pull all required Temporal images and start them in the background.
+   Docker will pull all required Temporal images and start them in the background.
 
 4. To confirm it’s running, open a browser and go to:
 
-        http://localhost:8080/
+   http://localhost:8080/
 
 If you see the Temporal Web UI, your Temporal backend is up and ready.
 
@@ -276,30 +289,38 @@ Next, clone the game and agent code itself.
 
 1. From the root of your Docker projects folder (or wherever you prefer to keep this project), run:
 
-        git clone https://github.com/rilhia/the-hallucinated-truth.git ./the-hallucinated-truth
+   ```bash
+   git clone [https://github.com/rilhia/the-hallucinated-truth.git](https://github.com/rilhia/the-hallucinated-truth.git) ./the-hallucinated-truth
+   ```
 
-    This will create a folder named:
+   This will create a folder named:
 
-        the-hallucinated-truth
+   `the-hallucinated-truth`
 
-    and clone everything needed to run the game, **except** the `.env` file.
+   and clone everything needed to run the game, **except** the `.env` file.
 
 2. Move into the project directory:
 
-        cd the-hallucinated-truth
+   ```bash
+   cd the-hallucinated-truth
+   ```
 
-    You can verify with:
+   You can verify with:
 
-        pwd
+   ```bash
+   pwd
+   ```
 
 3. Now create the `.env` file and insert the Google credentials you created earlier:
         
-       cat > .env <<'EOF'
-       GOOGLE_API_KEY=xxxxxxxxxxxxxxxxxxxxxxx
-       GOOGLE_CSE_ID=xxxxxxxxxxxxxxxxxxxxxxxx
-       EOF
+   ```bash
+   cat > .env <<'EOF'
+   GOOGLE_API_KEY=xxxxxxxxxxxxxxxxxxxxxxx
+   GOOGLE_CSE_ID=xxxxxxxxxxxxxxxxxxxxxxxx
+   EOF
+   ```
 
-    Replace the `x` values with your actual `GOOGLE_API_KEY` and `GOOGLE_CSE_ID`.
+   Replace the `x` values with your actual `GOOGLE_API_KEY` and `GOOGLE_CSE_ID`.
 
 At this point, the project is configured with the Google credentials it needs.
 
@@ -311,7 +332,9 @@ Make sure Temporal is still running (it will be unless you stopped the container
 
 From the root of the `the-hallucinated-truth` folder, start the full stack:
 
-    docker compose up -d
+```bash
+docker compose up -d
+```
 
 On the first run, this may take a while. Docker will:
 
@@ -323,7 +346,7 @@ On the first run, this may take a while. Docker will:
 
 Once everything is pulled and started, the app’s web interface will be available at:
 
-    http://localhost:8085/
+http://localhost:8085/
 
 Open that URL in your browser to access **The Hallucinated Truth**.
 
@@ -350,58 +373,70 @@ https://ollama.com/download/mac
 
 Install and verify:
 
-    ollama –version
+```bash
+ollama --version
+```
 
 Start the server:
 
-    ollama serve
+```bash
+ollama serve
+```
 
 Pull the model:
 
-    ollama pull llama3:latest
+```bash
+ollama pull llama3:latest
+```
 
 Native Ollama listens on:
 
-    http://localhost:11434
+http://localhost:11434
 
 ### Remove Ollama Container From Docker Compose
 
 Remove or comment out the `ollama:` service:
 
-    ollama:
-      image: ollama/ollama:latest
-      container_name: hallucinated_ollama
-      ports:
-        - "11434:11434"
-      volumes:
-        - ollama_data:/root/.ollama
-      restart: unless-stopped
-      entrypoint: ["/bin/sh", "-c"]
-      command: |
-        "
-        # Start Ollama in background
-        ollama serve &
+```yaml
+  ollama:
+    image: ollama/ollama:latest
+    container_name: hallucinated_ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "-c"]
+    command: |
+      "
+      # Start Ollama in background
+      ollama serve &
 
-        # Wait for API to come up
-        sleep 3
+      # Wait for API to come up
+      sleep 3
 
-        echo 'Pulling Llama 3 8B...'
-        ollama pull llama3:latest
+      echo 'Pulling Llama 3 8B...'
+      ollama pull llama3:latest
 
-        # Keep container alive
-        wait
-        "
-      networks:
-        - webnet
+      # Keep container alive
+      wait
+      "
+    networks:
+      - webnet
+```
 
 ### Restart Everything
 
-    docker compose down
-    docker compose up -d
+```bash
+docker compose down
+docker compose up -d
+```
 
 Ensure native Ollama is running:
     
-    ollama serve
+```bash
+ollama serve
+```
 
 ### Summary
 
@@ -452,7 +487,7 @@ This is where the game is played.
    - Inspect a game already in progress
    - Start a new game
  
-  <kbd><img src="images/Game_1.png" alt="Opening Screen"></kbd>
+ <kbd><img src="images/Game_1.png" alt="Opening Screen"></kbd>
 
 3. Click **Start New Game**
 
@@ -643,37 +678,44 @@ Together, these components demonstrate how LLMs, orchestration engines, and real
 - Check that Docker Desktop is running.  
 - Restart the Temporal stack:
 
-      cd temporal
-      docker compose up -d
+  ```bash
+  cd temporal
+  docker compose up -d
+  ```
 
 - Confirm again at:
 
-      http://localhost:8080/
+  http://localhost:8080/
 
 
 ## `llama3:latest` model not available
 
 If downloading the model via the stack fails, you can try pulling it manually with Ollama (if you have Ollama installed locally):
 
-    ollama pull llama3:latest
+```bash
+ollama pull llama3:latest
+```
 
 Then restart the app containers:
 
-    cd the-hallucinated-truth
-    docker compose up -d
-
+```bash
+cd the-hallucinated-truth
+docker compose up -d
+```
 
 ## `.env` not being picked up
 
 - Ensure that:
 
-      .env
+  `.env`
 
   exists in the root of `the-hallucinated-truth` (the same directory as `docker-compose.yml`).
 
 - Make sure you ran:
 
-      docker compose up -d
+  ```bash
+  docker compose up -d
+  ```
 
   from inside the `the-hallucinated-truth` directory.
 
@@ -685,7 +727,7 @@ If `8080` or `8085` are already in use:
 - Stop the conflicting service, or  
 - Update the `docker-compose.yml` file to map the services to different host ports, then restart:
 
-      docker compose down
-      docker compose up -d
-
-
+  ```bash
+  docker compose down
+  docker compose up -d
+  ```
